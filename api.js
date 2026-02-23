@@ -72,7 +72,7 @@ export async function getSubmissionMissionIdApi(submissionId) {
 export async function getMissionQuotaApi(missionId) {
     return await supabase
         .from('missions')
-        .select('quota, id')
+        .select('quota, id, title')
         .eq('id', missionId)
         .single();
 }
