@@ -64,7 +64,7 @@ export async function updateSubmissionStatusApi(submissionId, status) {
 export async function getSubmissionMissionIdApi(submissionId) {
     return await supabase
         .from('submissions')
-        .select('mission_id')
+        .select('mission_id, user_id')
         .eq('id', submissionId)
         .single();
 }

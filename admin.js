@@ -1164,6 +1164,22 @@ window.approve = async (submissionId, userId, rewardAmount) => {
             if (newQuota === 0) updateData.status = 'Completed';
             await updateMissionApi(mission.id, updateData);
         }
+
+        try {
+            const missionTitle = mission ? mission.title : 'Misi Cuan';
+            const messageStr = `🎉 <b>CONGRATULATIONS!</b>\n\n` +
+                `Hasil pekerjaan misi <b>${missionTitle}</b> Anda telah diverifikasi!\n\n` +
+                `💰 Saldo sebesar <b>Rp ${Number(rewardAmount).toLocaleString('id-ID')}</b> telah berhasil masuk keranjang pencairan.\n\n` +
+                `Ayo keruk terus cuanmu di menu: 📋 <b>Daftar Misi</b>! 🚀`;
+
+            await supabase.from('user_notifications').insert({
+                user_id: Number(userId),
+                type: 'approved',
+                mission_id: sub.mission_id,
+                message: messageStr
+            });
+        } catch (e) { console.error('Error inserting notif:', e); }
+
     }
     fetchSubmissions();
 };
@@ -1171,8 +1187,30 @@ window.approve = async (submissionId, userId, rewardAmount) => {
 window.reject = async (submissionId) => {
     if (!confirm('Tolak bukti ini? User akan mendapat notifikasi.')) return;
     const { error } = await updateSubmissionStatusApi(submissionId, 'Rejected');
-    if (error) alert('Gagal menolak.');
-    else fetchSubmissions();
+
+    if (error) {
+        alert('Gagal menolak.');
+    } else {
+        const { data: sub } = await getSubmissionMissionIdApi(submissionId);
+        if (sub && sub.user_id) {
+            try {
+                const { data: mission } = await supabase.from('missions').select('title').eq('id', sub.mission_id).single();
+                const missionTitle = mission ? mission.title : 'Misi Cuan';
+                const messageStr = `⚠️ <b>PERINGATAN DARI SISTEM</b>\n\n` +
+                    `Mohon maaf, bukti misi <b>${missionTitle}</b> Anda <b>DITOLAK</b> oleh Admin karena tidak sesuai dengan instruksi yang ditetapkan.\n\n` +
+                    `❌ Saldo Misi ini <b>tidak ditambahkan</b>.\n` +
+                    `Mari kerjakan dengan lebih teliti! Jangan menyerah! 💪`;
+
+                await supabase.from('user_notifications').insert({
+                    user_id: Number(sub.user_id),
+                    type: 'rejected',
+                    mission_id: sub.mission_id,
+                    message: messageStr
+                });
+            } catch (e) { console.error('Error inserting notif reject:', e); }
+        }
+        fetchSubmissions();
+    }
 };
 
 window.saveSetting = async (key) => {
