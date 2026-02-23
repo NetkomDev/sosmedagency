@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verifikasi Perangkat - Sosmed Agency</title>
+    <!-- Telegram WebApp JS -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        // Paksa buka layar loading secepat mungkin walau script lain belum siap
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.expand();
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module">
+        import { supabase } from './api.js';
+
+        async function init() {
+            const tg = window.Telegram.WebApp;
+            // tg.ready() and tg.expand() already called above
+
+            const status = document.getElementById('status');
+            const icon = document.getElementById('icon-container');
+
+            const user = tg.initDataUnsafe?.user;
+            if (!user) {
+                status.innerHTML = "❌ Akses ditolak. Harap buka melalui Bot Telegram resmi.";
+                icon.innerHTML = '🚫';
+                return;
+            }
+
+            // Start Verifying Automatically
+            async function doVerify() {
+                try {
+                    // Fast Fingerprint computation
+                    const fingerprint = btoa(
+                        `${navigator.userAgent}-${navigator.language}-${navigator.hardwareConcurrency}-${screen.width}x${screen.height}-${navigator.platform}`
+                    ).substring(0, 32);
+
+                    // IP Fetch in background with timeout (don't wait more than 2s for IP)
+                    const fetchIp = async () => {
+                        try {
+                            const res = await fetch('https://api.ipify.org?format=json', { signal: AbortSignal.timeout(2000) });
+                            const json = await res.json();
+                            return json.ip || '0.0.0.0';
+                        } catch (e) { return '0.0.0.0'; }
+                    };
+                    const ip_address = await fetchIp();
+
+                    // Check duplicate devices instantly
+                    const { data: duplicates, error: errDup } = await supabase
+                        .from('profiles')
+                        .select('id, username')
+                        .eq('device_fingerprint', fingerprint)
+                        .neq('id', user.id)
+                        .limit(1);
+
+                    if (duplicates && duplicates.length > 0) {
+                        icon.innerHTML = '🚨';
+                        icon.classList.remove('border-emerald-500', 'shadow-[0_0_15px_rgba(16,185,129,0.5)]', 'animate-pulse');
+                        icon.classList.add('border-rose-500', 'shadow-[0_0_15px_rgba(225,29,72,0.8)]');
+                        status.className = "text-sm mb-6 text-rose-400 font-medium";
+                        status.innerHTML = `<b>TERDETEKSI KECURANGAN!</b><br>Perangkat ini sudah digunakan oleh akun lain <i>(@${duplicates[0].username || duplicates[0].id})</i>.`;
+
+                        await supabase.from('profiles').update({
+                            device_fingerprint: fingerprint,
+                            ip_address: ip_address,
+                            is_device_verified: false
+                        }).eq('id', user.id);
+
+                        setTimeout(() => tg.close(), 4000);
+                        return;
+                    }
+
+                    // Save verified data
+                    const { error } = await supabase
+                        .from('profiles')
+                        .update({
+                            device_fingerprint: fingerprint,
+                            ip_address: ip_address,
+                            is_device_verified: true
+                        }).eq('id', user.id);
+
+                    if (error) throw error;
+
+                    // Success! Show tick mark
+                    icon.innerHTML = `<svg class="w-12 h-12 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+                    icon.classList.remove('animate-pulse');
+                    status.innerHTML = "✅ <b>Verifikasi Berhasil!</b><br>Sistem aman. Membawa Anda kembali ke Sosmed Agency...";
+
+                    try { tg.sendData(JSON.stringify({ action: 'device_verified', success: true })); } catch (e) { }
+                    setTimeout(() => tg.close(), 1500);
+
+                } catch (err) {
+                    icon.innerHTML = '❌';
+                    icon.classList.remove('animate-pulse');
+                    status.innerHTML = "Gagal memvalidasi: " + err.message + "<br><button onclick='location.reload()' class='mt-4 underline text-emerald-400'>Coba Lagi</button>";
+                }
+            }
+
+            // Start immediately
+            doVerify();
+        }
+
+        init();
+    </script>
+</head>
+
+<body class="bg-slate-900 text-white font-sans flex items-center justify-center min-h-screen p-5">
+    <div
+        class="bg-gray-800 p-8 rounded-3xl shadow-xl w-full max-w-sm text-center border border-gray-700 relative overflow-hidden">
+
+        <!-- Glowing animated background -->
+        <div
+            class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-400 opacity-50">
+        </div>
+
+        <div class="mb-8 mt-4 flex justify-center">
+            <span id="icon-container"
+                class="flex items-center justify-center w-24 h-24 text-4xl border-4 border-emerald-500 rounded-full relative shadow-[0_0_15px_rgba(16,185,129,0.5)] animate-pulse transition-all duration-300">
+                <!-- SVG Spinner -->
+                <svg class="animate-spin h-10 w-10 text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none"
+                    viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                    </path>
+                </svg>
+            </span>
+        </div>
+
+        <h1 class="text-xl font-bold mb-2 tracking-wide text-gray-100">Memeriksa Keamanan Perangkat</h1>
+        <p class="text-sm text-gray-400 mb-6 leading-relaxed">Sistem mendeteksi dan mengamankan sidik jari digital Anda
+            untuk mencegah pembuatan multi-akun...</p>
+
+        <p id="status" class="text-sm text-emerald-400 font-medium"></p>
+    </div>
+</body>
+
+</html>

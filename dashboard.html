@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sosmed Agency — Dashboard Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@3"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0F172A;
+            --bg-secondary: #111827;
+            --bg-card: rgba(17, 24, 39, 0.7);
+            --bg-card-hover: rgba(30, 41, 59, 0.8);
+            --border: rgba(56, 189, 248, 0.15);
+            --border-glow: rgba(56, 189, 248, 0.3);
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --accent-blue: #38BDF8;
+            --accent-cyan: #22d3ee;
+            --accent-green: #10b981;
+            --accent-purple: #a855f7;
+            --accent-orange: #f97316;
+            --accent-pink: #ec4899;
+            --accent-red: #ef4444;
+            --accent-yellow: #eab308;
+            --glow-blue: 0 0 30px rgba(56, 189, 248, 0.15);
+            --glow-cyan: 0 0 30px rgba(34, 211, 238, 0.15);
+            --glow-green: 0 0 30px rgba(16, 185, 129, 0.15);
+            --glow-purple: 0 0 30px rgba(168, 85, 247, 0.15);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(ellipse 80% 50% at 20% 40%, rgba(56, 189, 248, 0.06), transparent),
+                radial-gradient(ellipse 60% 40% at 80% 20%, rgba(168, 85, 247, 0.05), transparent),
+                radial-gradient(ellipse 50% 60% at 50% 80%, rgba(34, 211, 238, 0.04), transparent);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 260px;
+            background: rgba(10, 14, 26, 0.95);
+            backdrop-filter: blur(20px);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-brand {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-brand h1 {
+            font-size: 1.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.03em;
+        }
+
+        .sidebar-brand span {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-weight: 400;
+            margin-left: 0.25rem;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 1rem 0.75rem;
+            overflow-y: auto;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1rem;
+            border-radius: 0.75rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            margin-bottom: 0.25rem;
+        }
+
+        .nav-link:hover {
+            background: rgba(56, 189, 248, 0.08);
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(34, 211, 238, 0.08));
+            color: var(--accent-cyan);
+            border: 1px solid rgba(56, 189, 248, 0.2);
+        }
+
+        .nav-link svg {
+            width: 18px;
+            height: 18px;
+            opacity: 0.7;
+            flex-shrink: 0;
+        }
+
+        .nav-link.active svg {
+            opacity: 1;
+        }
+
+        .nav-divider {
+            padding: 1rem 1rem 0.5rem;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .nav-link.logout {
+            color: var(--accent-red);
+            margin-top: 0.5rem;
+        }
+
+        .nav-link.logout:hover {
+            background: rgba(239, 68, 68, 0.08);
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .page-header {
+            margin-bottom: 2rem;
+        }
+
+        .page-header h1 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.25rem;
+        }
+
+        .page-header p {
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .date-display {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 0.5rem 1rem;
+            border-radius: 0.75rem;
+            backdrop-filter: blur(10px);
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            border-radius: 1rem 1rem 0 0;
+        }
+
+        .kpi-card:nth-child(1)::before {
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+        }
+
+        .kpi-card:nth-child(2)::before {
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+        }
+
+        .kpi-card:nth-child(3)::before {
+            background: linear-gradient(90deg, var(--accent-purple), var(--accent-pink));
+        }
+
+        .kpi-card:nth-child(4)::before {
+            background: linear-gradient(90deg, var(--accent-orange), var(--accent-yellow));
+        }
+
+        .kpi-card:hover {
+            border-color: var(--border-glow);
+            transform: translateY(-2px);
+        }
+
+        .kpi-card:nth-child(1):hover {
+            box-shadow: var(--glow-blue);
+        }
+
+        .kpi-card:nth-child(2):hover {
+            box-shadow: var(--glow-green);
+        }
+
+        .kpi-card:nth-child(3):hover {
+            box-shadow: var(--glow-purple);
+        }
+
+        .kpi-card:nth-child(4):hover {
+            box-shadow: 0 0 30px rgba(249, 115, 22, 0.15);
+        }
+
+        .kpi-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            border-radius: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .kpi-card:nth-child(1) .kpi-icon {
+            background: rgba(56, 189, 248, 0.15);
+        }
+
+        .kpi-card:nth-child(2) .kpi-icon {
+            background: rgba(16, 185, 129, 0.15);
+        }
+
+        .kpi-card:nth-child(3) .kpi-icon {
+            background: rgba(168, 85, 247, 0.15);
+        }
+
+        .kpi-card:nth-child(4) .kpi-icon {
+            background: rgba(249, 115, 22, 0.15);
+        }
+
+        .kpi-label {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            line-height: 1;
+        }
+
+        .kpi-card:nth-child(1) .kpi-value {
+            color: var(--accent-cyan);
+        }
+
+        .kpi-card:nth-child(2) .kpi-value {
+            color: var(--accent-green);
+        }
+
+        .kpi-card:nth-child(3) .kpi-value {
+            color: var(--accent-purple);
+        }
+
+        .kpi-card:nth-child(4) .kpi-value {
+            color: var(--accent-orange);
+        }
+
+        .kpi-sub {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.5rem;
+        }
+
+        .kpi-sub .trend-up {
+            color: var(--accent-green);
+            font-weight: 600;
+        }
+
+        .kpi-sub .trend-down {
+            color: var(--accent-red);
+            font-weight: 600;
+        }
+
+        /* Chart Grid */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 1.25rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .chart-card:hover {
+            border-color: var(--border-glow);
+        }
+
+        .chart-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .chart-title {
+            font-size: 0.875rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .chart-title .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .chart-title .dot.blue {
+            background: var(--accent-blue);
+            box-shadow: 0 0 8px var(--accent-blue);
+        }
+
+        .chart-title .dot.green {
+            background: var(--accent-green);
+            box-shadow: 0 0 8px var(--accent-green);
+        }
+
+        .chart-title .dot.purple {
+            background: var(--accent-purple);
+            box-shadow: 0 0 8px var(--accent-purple);
+        }
+
+        .chart-title .dot.orange {
+            background: var(--accent-orange);
+            box-shadow: 0 0 8px var(--accent-orange);
+        }
+
+        .chart-title .dot.cyan {
+            background: var(--accent-cyan);
+            box-shadow: 0 0 8px var(--accent-cyan);
+        }
+
+        .chart-title .dot.pink {
+            background: var(--accent-pink);
+            box-shadow: 0 0 8px var(--accent-pink);
+        }
+
+        /* Period Toggle */
+        .period-toggle {
+            display: flex;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            overflow: hidden;
+        }
+
+        .period-btn {
+            padding: 0.3rem 0.65rem;
+            font-size: 0.65rem;
+            font-weight: 600;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .period-btn:hover {
+            color: var(--text-secondary);
+        }
+
+        .period-btn.active {
+            background: var(--accent-blue);
+            color: white;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 260px;
+        }
+
+        .chart-container.small {
+            height: 220px;
+        }
+
+        /* Third Row — 3 col */
+        .chart-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Top Workers Table */
+        .workers-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        .workers-table th {
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            padding: 0.5rem 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .workers-table td {
+            padding: 0.6rem 0.75rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid rgba(56, 189, 248, 0.05);
+        }
+
+        .workers-table tr:hover td {
+            background: rgba(56, 189, 248, 0.03);
+        }
+
+        .rank-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 1.5rem;
+            height: 1.5rem;
+            border-radius: 0.3rem;
+            font-size: 0.65rem;
+            font-weight: 800;
+        }
+
+        .rank-1 {
+            background: linear-gradient(135deg, #eab308, #f97316);
+            color: #0F172A;
+        }
+
+        .rank-2 {
+            background: linear-gradient(135deg, #94a3b8, #cbd5e1);
+            color: #0F172A;
+        }
+
+        .rank-3 {
+            background: linear-gradient(135deg, #b45309, #d97706);
+            color: #0F172A;
+        }
+
+        .rank-default {
+            background: rgba(56, 189, 248, 0.1);
+            color: var(--text-muted);
+        }
+
+        /* Loading Animation */
+        .loading-pulse {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 0.6;
+            }
+
+            50% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .delay-1 {
+            animation-delay: 0.1s;
+            opacity: 0;
+        }
+
+        .delay-2 {
+            animation-delay: 0.2s;
+            opacity: 0;
+        }
+
+        .delay-3 {
+            animation-delay: 0.3s;
+            opacity: 0;
+        }
+
+        .delay-4 {
+            animation-delay: 0.4s;
+            opacity: 0;
+        }
+
+        .delay-5 {
+            animation-delay: 0.5s;
+            opacity: 0;
+        }
+
+        .delay-6 {
+            animation-delay: 0.6s;
+            opacity: 0;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .chart-grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 1rem;
+            }
+
+            .kpi-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+        }
+
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 200;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            padding: 0.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 768px) {
+            .mobile-toggle {
+                display: block;
+            }
+        }
+
+        /* Counters */
+        .counter-value {
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(56, 189, 248, 0.2);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(56, 189, 248, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Mobile Toggle -->
+    <button class="mobile-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">
+        <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+    </button>
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <h1>Sosmed Agency <span>Analytics</span></h1>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="dashboard.html" class="nav-link active">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z" />
+                </svg>
+                Dashboard
+            </a>
+            <a href="admin.html#orders" class="nav-link">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+                Incoming Orders
+            </a>
+            <a href="admin.html#active-missions" class="nav-link">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                </svg>
+                Active Missions
+            </a>
+            <a href="admin.html#queue" class="nav-link">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Submissions
+            </a>
+            <div class="nav-divider">Configuration</div>
+            <a href="admin.html#packages" class="nav-link">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                </svg>
+                Packages & Pricing
+            </a>
+            <a href="admin.html#settings" class="nav-link">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Global Settings
+            </a>
+            <a href="analysis.html" class="nav-link">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                System Analysis
+            </a>
+            <button onclick="logout()" class="nav-link logout"
+                style="width:100%;border:none;background:none;cursor:pointer;text-align:left;">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                </svg>
+                Logout
+            </button>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="page-header animate-in">
+            <div class="header-row">
+                <div>
+                    <h1>📊 Dashboard Analytics</h1>
+                    <p>Pantau performa bisnis Sosmed Agency secara real-time</p>
+                </div>
+                <div class="date-display" id="currentDate">Loading...</div>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card animate-in delay-1">
+                <div class="kpi-icon">📦</div>
+                <div class="kpi-label">Total Orders</div>
+                <div class="kpi-value" id="kpiOrders">—</div>
+                <div class="kpi-sub"><span id="kpiOrdersToday">—</span> order hari ini</div>
+            </div>
+            <div class="kpi-card animate-in delay-2">
+                <div class="kpi-icon">💰</div>
+                <div class="kpi-label">Revenue (Verified)</div>
+                <div class="kpi-value" id="kpiRevenue">—</div>
+                <div class="kpi-sub"><span id="kpiRevenueMonth">—</span> bulan ini</div>
+            </div>
+            <div class="kpi-card animate-in delay-3">
+                <div class="kpi-icon">👥</div>
+                <div class="kpi-label">Total Pasukan</div>
+                <div class="kpi-value" id="kpiWorkers">—</div>
+                <div class="kpi-sub"><span id="kpiWorkersNew">—</span> pasukan baru bulan ini</div>
+            </div>
+            <div class="kpi-card animate-in delay-4">
+                <div class="kpi-icon">💸</div>
+                <div class="kpi-label">Pembayaran Jasa</div>
+                <div class="kpi-value" id="kpiPaid">—</div>
+                <div class="kpi-sub"><span id="kpiMissionsComplete">—</span> misi selesai</div>
+            </div>
+        </div>
+
+        <!-- Row 1: Orders & Revenue -->
+        <div class="chart-grid">
+            <div class="chart-card animate-in delay-3">
+                <div class="chart-header">
+                    <div class="chart-title"><span class="dot blue"></span> Order Trends</div>
+                    <div class="period-toggle" data-chart="orders">
+                        <button class="period-btn" data-period="day"
+                            onclick="switchPeriod('orders','day',this)">Hari</button>
+                        <button class="period-btn active" data-period="week"
+                            onclick="switchPeriod('orders','week',this)">Minggu</button>
+                        <button class="period-btn" data-period="month"
+                            onclick="switchPeriod('orders','month',this)">Bulan</button>
+                        <button class="period-btn" data-period="year"
+                            onclick="switchPeriod('orders','year',this)">Tahun</button>
+                    </div>
+                </div>
+                <div class="chart-container"><canvas id="chartOrders"></canvas></div>
+            </div>
+            <div class="chart-card animate-in delay-4">
+                <div class="chart-header">
+                    <div class="chart-title"><span class="dot green"></span> Revenue (Verified Only)</div>
+                    <div class="period-toggle" data-chart="revenue">
+                        <button class="period-btn" data-period="day"
+                            onclick="switchPeriod('revenue','day',this)">Hari</button>
+                        <button class="period-btn active" data-period="week"
+                            onclick="switchPeriod('revenue','week',this)">Minggu</button>
+                        <button class="period-btn" data-period="month"
+                            onclick="switchPeriod('revenue','month',this)">Bulan</button>
+                        <button class="period-btn" data-period="year"
+                            onclick="switchPeriod('revenue','year',this)">Tahun</button>
+                    </div>
+                </div>
+                <div class="chart-container"><canvas id="chartRevenue"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Row 2: Workers & Worker Payments -->
+        <div class="chart-grid">
+            <div class="chart-card animate-in delay-4">
+                <div class="chart-header">
+                    <div class="chart-title"><span class="dot purple"></span> Pertumbuhan Pasukan</div>
+                    <div class="period-toggle" data-chart="workers">
+                        <button class="period-btn active" data-period="week"
+                            onclick="switchPeriod('workers','week',this)">Minggu</button>
+                        <button class="period-btn" data-period="month"
+                            onclick="switchPeriod('workers','month',this)">Bulan</button>
+                        <button class="period-btn" data-period="year"
+                            onclick="switchPeriod('workers','year',this)">Tahun</button>
+                    </div>
+                </div>
+                <div class="chart-container"><canvas id="chartWorkers"></canvas></div>
+            </div>
+            <div class="chart-card animate-in delay-5">
+                <div class="chart-header">
+                    <div class="chart-title"><span class="dot orange"></span> Pembayaran Jasa ke Pasukan</div>
+                    <div class="period-toggle" data-chart="payments">
+                        <button class="period-btn" data-period="day"
+                            onclick="switchPeriod('payments','day',this)">Hari</button>
+                        <button class="period-btn active" data-period="week"
+                            onclick="switchPeriod('payments','week',this)">Minggu</button>
+                        <button class="period-btn" data-period="month"
+                            onclick="switchPeriod('payments','month',this)">Bulan</button>
+                        <button class="period-btn" data-period="year"
+                            onclick="switchPeriod('payments','year',this)">Tahun</button>
+                    </div>
+                </div>
+                <div class="chart-container"><canvas id="chartPayments"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Row 3: Additional Insights -->
+        <div class="chart-grid-3">
+            <div class="chart-card animate-in delay-5">
+                <div class="chart-header">
+                    <div class="chart-title"><span class="dot cyan"></span> Tingkat Keberhasilan Misi</div>
+                </div>
+                <div class="chart-container small"><canvas id="chartSuccess"></canvas></div>
+            </div>
+            <div class="chart-card animate-in delay-5">
+                <div class="chart-header">
+                    <div class="chart-title"><span class="dot pink"></span> Distribusi Platform</div>
+                </div>
+                <div class="chart-container small"><canvas id="chartPlatform"></canvas></div>
+            </div>
+            <div class="chart-card animate-in delay-6">
+                <div class="chart-header">
+                    <div class="chart-title"><span class="dot green"></span> Profit Analysis</div>
+                </div>
+                <div class="chart-container small"><canvas id="chartProfit"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Row 4: Top Workers -->
+        <div class="chart-card animate-in delay-6" style="margin-bottom:2rem;">
+            <div class="chart-header">
+                <div class="chart-title"><span class="dot cyan"></span> Top Pasukan (Pekerja Terbaik)</div>
+            </div>
+            <table class="workers-table">
+                <thead>
+                    <tr>
+                        <th style="width:50px">Rank</th>
+                        <th>Username</th>
+                        <th>Misi Selesai</th>
+                        <th>Total Earned</th>
+                        <th>Saldo Saat Ini</th>
+                    </tr>
+                </thead>
+                <tbody id="topWorkersBody">
+                    <tr>
+                        <td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted)"
+                            class="loading-pulse">Memuat data pasukan...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script type="module">
+        import { SUPABASE_URL, SUPABASE_ANON_KEY } from './supabase.js';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Auth guard
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) window.location.href = 'login.html';
+
+        // Expose logout
+        window.logout = async () => {
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        };
+
+        // Current date
+        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('id-ID', {
+            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+        });
+
+        // ──────────────────────────────────────────
+        // DATA FETCHING
+        // ──────────────────────────────────────────
+        let rawOrders = [], rawProfiles = [], rawSubmissions = [], rawMissions = [];
+
+        async function fetchAllData() {
+            const [ordersRes, profilesRes, submissionsRes, missionsRes] = await Promise.all([
+                supabase.from('orders').select('id, total_price, status, created_at, package_name').order('created_at', { ascending: true }),
+                supabase.from('profiles').select('id, username, balance, created_at'),
+                supabase.from('submissions').select('id, user_id, mission_id, status, created_at').order('created_at', { ascending: true }),
+                supabase.from('missions').select('id, category, platform_type, reward, quota, status, created_at').order('created_at', { ascending: true })
+            ]);
+
+            rawOrders = ordersRes.data || [];
+            rawProfiles = profilesRes.data || [];
+            rawSubmissions = submissionsRes.data || [];
+            rawMissions = missionsRes.data || [];
+
+            populateKPIs();
+            renderAllCharts();
+            renderTopWorkers();
+        }
+
+        // ──────────────────────────────────────────
+        // KPI CALCULATIONS
+        // ──────────────────────────────────────────
+        function fmtRp(n) {
+            if (n >= 1_000_000) return `Rp ${(n / 1_000_000).toFixed(1)}jt`;
+            if (n >= 1_000) return `Rp ${(n / 1_000).toFixed(0)}rb`;
+            return `Rp ${n.toLocaleString('id-ID')}`;
+        }
+
+        function animateCounter(el, target, prefix = '') {
+            const duration = 1200;
+            const start = performance.now();
+            const from = 0;
+            function tick(now) {
+                const progress = Math.min((now - start) / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                const current = Math.floor(from + (target - from) * eased);
+                el.textContent = prefix + current.toLocaleString('id-ID');
+                if (progress < 1) requestAnimationFrame(tick);
+                else el.textContent = prefix + target.toLocaleString('id-ID');
+            }
+            requestAnimationFrame(tick);
+        }
+
+        function populateKPIs() {
+            const now = new Date();
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+            // Total Orders
+            animateCounter(document.getElementById('kpiOrders'), rawOrders.length);
+            const ordersToday = rawOrders.filter(o => new Date(o.created_at) >= todayStart).length;
+            document.getElementById('kpiOrdersToday').textContent = ordersToday;
+
+            // Revenue (only verified/processed — not pending)
+            const verifiedOrders = rawOrders.filter(o => o.status && o.status !== 'pending');
+            const totalRevenue = verifiedOrders.reduce((sum, o) => sum + (o.total_price || 0), 0);
+            document.getElementById('kpiRevenue').textContent = fmtRp(totalRevenue);
+            const monthRevenue = verifiedOrders
+                .filter(o => new Date(o.created_at) >= monthStart)
+                .reduce((sum, o) => sum + (o.total_price || 0), 0);
+            document.getElementById('kpiRevenueMonth').textContent = fmtRp(monthRevenue);
+
+            // Workers
+            animateCounter(document.getElementById('kpiWorkers'), rawProfiles.length);
+            const newWorkers = rawProfiles.filter(p => new Date(p.created_at) >= monthStart).length;
+            document.getElementById('kpiWorkersNew').textContent = newWorkers;
+
+            // Worker payments (approved submissions × mission reward)
+            const approvedSubs = rawSubmissions.filter(s => s.status === 'Approved');
+            const missionMap = {};
+            rawMissions.forEach(m => missionMap[m.id] = m);
+            let totalPaid = 0;
+            approvedSubs.forEach(s => {
+                const mission = missionMap[s.mission_id];
+                if (mission) totalPaid += Number(mission.reward) || 0;
+            });
+            document.getElementById('kpiPaid').textContent = fmtRp(totalPaid);
+            document.getElementById('kpiMissionsComplete').textContent = approvedSubs.length;
+        }
+
+        // ──────────────────────────────────────────
+        // CHART THEME
+        // ──────────────────────────────────────────
+        Chart.defaults.color = '#64748b';
+        Chart.defaults.borderColor = 'rgba(56, 189, 248, 0.08)';
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.font.size = 11;
+
+        const chartInstances = {};
+
+        function createGradient(ctx, colorStart, colorEnd) {
+            const gradient = ctx.createLinearGradient(0, 0, 0, 260);
+            gradient.addColorStop(0, colorStart);
+            gradient.addColorStop(1, colorEnd);
+            return gradient;
+        }
+
+        // ──────────────────────────────────────────
+        // AGGREGATION UTILS
+        // ──────────────────────────────────────────
+        function getDateKey(date, period) {
+            const d = new Date(date);
+            switch (period) {
+                case 'day':
+                    return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
+                case 'week': {
+                    const start = new Date(d);
+                    start.setDate(d.getDate() - d.getDay());
+                    return `W${Math.ceil(start.getDate() / 7)} ${start.toLocaleDateString('id-ID', { month: 'short' })}`;
+                }
+                case 'month':
+                    return d.toLocaleDateString('id-ID', { month: 'short', year: '2-digit' });
+                case 'year':
+                    return d.getFullYear().toString();
+            }
+        }
+
+        function getDateRange(period) {
+            const now = new Date();
+            switch (period) {
+                case 'day': return new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000); // 30 days
+                case 'week': return new Date(now.getTime() - 12 * 7 * 24 * 60 * 60 * 1000); // 12 weeks
+                case 'month': return new Date(now.getFullYear() - 1, now.getMonth(), 1); // 12 months
+                case 'year': return new Date(now.getFullYear() - 5, 0, 1); // 5 years
+            }
+        }
+
+        function aggregateByPeriod(data, period, valueKey = null) {
+            const rangeStart = getDateRange(period);
+            const filtered = data.filter(d => new Date(d.created_at) >= rangeStart);
+            const groups = {};
+            filtered.forEach(d => {
+                const key = getDateKey(d.created_at, period);
+                if (!groups[key]) groups[key] = { count: 0, value: 0 };
+                groups[key].count += 1;
+                if (valueKey) groups[key].value += Number(d[valueKey]) || 0;
+            });
+            const labels = Object.keys(groups);
+            return {
+                labels,
+                counts: labels.map(l => groups[l].count),
+                values: labels.map(l => groups[l].value)
+            };
+        }
+
+        function aggregatePaymentsByPeriod(period) {
+            const rangeStart = getDateRange(period);
+            const approved = rawSubmissions.filter(s => s.status === 'Approved' && new Date(s.created_at) >= rangeStart);
+            const missionMap = {};
+            rawMissions.forEach(m => missionMap[m.id] = m);
+            const groups = {};
+            approved.forEach(s => {
+                const key = getDateKey(s.created_at, period);
+                if (!groups[key]) groups[key] = 0;
+                const mission = missionMap[s.mission_id];
+                groups[key] += mission ? (Number(mission.reward) || 0) : 0;
+            });
+            const labels = Object.keys(groups);
+            return { labels, values: labels.map(l => groups[l]) };
+        }
+
+        // ──────────────────────────────────────────
+        // CHART RENDERERS
+        // ──────────────────────────────────────────
+        function renderLineChart(canvasId, labels, data, color, label) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+
+            const gradient = createGradient(ctx, color.replace('1)', '0.25)'), color.replace('1)', '0)'));
+
+            chartInstances[canvasId] = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label,
+                        data,
+                        borderColor: color,
+                        backgroundColor: gradient,
+                        fill: true,
+                        tension: 0.4,
+                        borderWidth: 2.5,
+                        pointRadius: labels.length <= 12 ? 4 : 0,
+                        pointBackgroundColor: color,
+                        pointBorderColor: '#0F172A',
+                        pointBorderWidth: 2,
+                        pointHoverRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(10, 14, 26, 0.9)',
+                            borderColor: 'rgba(56, 189, 248, 0.3)',
+                            borderWidth: 1,
+                            padding: 12,
+                            titleFont: { weight: 700 },
+                            bodyFont: { size: 13 },
+                            displayColors: false
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { font: { size: 10 }, maxTicksLimit: 10 } },
+                        y: { beginAtZero: true, grid: { color: 'rgba(56, 189, 248, 0.05)' }, ticks: { font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        function renderBarChart(canvasId, labels, data, color, label) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+
+            chartInstances[canvasId] = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label,
+                        data,
+                        backgroundColor: labels.map((_, i) => {
+                            const alpha = 0.3 + (i / labels.length) * 0.7;
+                            return color.replace('1)', `${alpha})`);
+                        }),
+                        borderColor: color,
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        borderSkipped: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(10, 14, 26, 0.9)',
+                            borderColor: 'rgba(56, 189, 248, 0.3)',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: false,
+                            callbacks: {
+                                label: (context) => `${label}: Rp ${context.raw.toLocaleString('id-ID')}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                        y: { beginAtZero: true, grid: { color: 'rgba(56, 189, 248, 0.05)' } }
+                    }
+                }
+            });
+        }
+
+        function renderDoughnutChart(canvasId, labels, data, colors) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            if (chartInstances[canvasId]) chartInstances[canvasId].destroy();
+
+            chartInstances[canvasId] = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels,
+                    datasets: [{
+                        data,
+                        backgroundColor: colors,
+                        borderColor: '#0F172A',
+                        borderWidth: 3,
+                        hoverOffset: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '65%',
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                color: '#94a3b8',
+                                padding: 12,
+                                usePointStyle: true,
+                                pointStyleWidth: 8,
+                                font: { size: 10 }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(10, 14, 26, 0.9)',
+                            borderColor: 'rgba(56, 189, 248, 0.3)',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // ──────────────────────────────────────────
+        // CHART PERIODS STATE
+        // ──────────────────────────────────────────
+        const periods = { orders: 'week', revenue: 'week', workers: 'week', payments: 'week' };
+
+        window.switchPeriod = function (chart, period, btn) {
+            periods[chart] = period;
+            btn.parentElement.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderChart(chart);
+        };
+
+        function renderChart(chart) {
+            const period = periods[chart];
+            switch (chart) {
+                case 'orders': {
+                    const agg = aggregateByPeriod(rawOrders, period);
+                    renderLineChart('chartOrders', agg.labels, agg.counts, 'rgba(56, 189, 248, 1)', 'Orders');
+                    break;
+                }
+                case 'revenue': {
+                    const verified = rawOrders.filter(o => o.status && o.status !== 'pending');
+                    const agg = aggregateByPeriod(verified, period, 'total_price');
+                    renderLineChart('chartRevenue', agg.labels, agg.values, 'rgba(16, 185, 129, 1)', 'Revenue');
+                    break;
+                }
+                case 'workers': {
+                    const agg = aggregateByPeriod(rawProfiles, period);
+                    // Cumulative
+                    let cumulative = 0;
+                    const cumData = agg.counts.map(c => cumulative += c);
+                    renderLineChart('chartWorkers', agg.labels, cumData, 'rgba(168, 85, 247, 1)', 'Total Pasukan');
+                    break;
+                }
+                case 'payments': {
+                    const pay = aggregatePaymentsByPeriod(period);
+                    renderBarChart('chartPayments', pay.labels, pay.values, 'rgba(249, 115, 22, 1)', 'Pembayaran');
+                    break;
+                }
+            }
+        }
+
+        function renderAllCharts() {
+            renderChart('orders');
+            renderChart('revenue');
+            renderChart('workers');
+            renderChart('payments');
+            renderAdditionalCharts();
+        }
+
+        function renderAdditionalCharts() {
+            // 1. Mission Success Rate
+            const approved = rawSubmissions.filter(s => s.status === 'Approved').length;
+            const rejected = rawSubmissions.filter(s => s.status === 'Rejected').length;
+            const pending = rawSubmissions.filter(s => s.status === 'Pending').length;
+            renderDoughnutChart('chartSuccess',
+                ['Approved', 'Rejected', 'Pending'],
+                [approved || 0, rejected || 0, pending || 0],
+                ['rgba(16, 185, 129, 0.8)', 'rgba(239, 68, 68, 0.8)', 'rgba(234, 179, 8, 0.8)']
+            );
+
+            // 2. Platform Distribution (from orders package_name)
+            const platformCounts = {};
+            rawOrders.forEach(o => {
+                const name = o.package_name || 'Unknown';
+                // Extract platform from package name
+                const platform = name.split(' - ')[0] || name.split(' ')[0] || name;
+                platformCounts[platform] = (platformCounts[platform] || 0) + 1;
+            });
+            const platformLabels = Object.keys(platformCounts);
+            const platformData = Object.values(platformCounts);
+            const platformColors = ['rgba(99,102,241,0.8)', 'rgba(236,72,153,0.8)', 'rgba(34,211,238,0.8)', 'rgba(249,115,22,0.8)', 'rgba(168,85,247,0.8)', 'rgba(16,185,129,0.8)', 'rgba(234,179,8,0.8)'];
+            renderDoughnutChart('chartPlatform', platformLabels, platformData, platformColors.slice(0, platformLabels.length));
+
+            // 3. Profit Analysis (Revenue vs Worker Costs)
+            const missionMap = {};
+            rawMissions.forEach(m => missionMap[m.id] = m);
+            const monthGroups = {};
+            // Revenue by month (verified only)
+            const verifiedOrders = rawOrders.filter(o => o.status && o.status !== 'pending');
+            verifiedOrders.forEach(o => {
+                const key = new Date(o.created_at).toLocaleDateString('id-ID', { month: 'short', year: '2-digit' });
+                if (!monthGroups[key]) monthGroups[key] = { revenue: 0, cost: 0 };
+                monthGroups[key].revenue += o.total_price || 0;
+            });
+            // Cost by month
+            rawSubmissions.filter(s => s.status === 'Approved').forEach(s => {
+                const key = new Date(s.created_at).toLocaleDateString('id-ID', { month: 'short', year: '2-digit' });
+                if (!monthGroups[key]) monthGroups[key] = { revenue: 0, cost: 0 };
+                const mission = missionMap[s.mission_id];
+                monthGroups[key].cost += mission ? (Number(mission.reward) || 0) : 0;
+            });
+
+            const profitLabels = Object.keys(monthGroups);
+            const revenueData = profitLabels.map(k => monthGroups[k].revenue);
+            const costData = profitLabels.map(k => monthGroups[k].cost);
+
+            const ctxProfit = document.getElementById('chartProfit').getContext('2d');
+            if (chartInstances['chartProfit']) chartInstances['chartProfit'].destroy();
+
+            chartInstances['chartProfit'] = new Chart(ctxProfit, {
+                type: 'bar',
+                data: {
+                    labels: profitLabels,
+                    datasets: [
+                        {
+                            label: 'Revenue',
+                            data: revenueData,
+                            backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                            borderColor: 'rgba(16, 185, 129, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            borderSkipped: false
+                        },
+                        {
+                            label: 'Biaya Jasa',
+                            data: costData,
+                            backgroundColor: 'rgba(239, 68, 68, 0.5)',
+                            borderColor: 'rgba(239, 68, 68, 1)',
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            borderSkipped: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: { color: '#94a3b8', padding: 12, usePointStyle: true, pointStyleWidth: 8, font: { size: 10 } }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(10, 14, 26, 0.9)',
+                            borderColor: 'rgba(56, 189, 248, 0.3)',
+                            borderWidth: 1,
+                            padding: 12,
+                            displayColors: true,
+                            callbacks: {
+                                label: (c) => `${c.dataset.label}: Rp ${c.raw.toLocaleString('id-ID')}`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { font: { size: 10 } } },
+                        y: { beginAtZero: true, grid: { color: 'rgba(56, 189, 248, 0.05)' } }
+                    }
+                }
+            });
+        }
+
+        // ──────────────────────────────────────────
+        // TOP WORKERS
+        // ──────────────────────────────────────────
+        function renderTopWorkers() {
+            const missionMap = {};
+            rawMissions.forEach(m => missionMap[m.id] = m);
+
+            const workerStats = {};
+            rawSubmissions.filter(s => s.status === 'Approved').forEach(s => {
+                if (!workerStats[s.user_id]) workerStats[s.user_id] = { count: 0, earned: 0 };
+                workerStats[s.user_id].count += 1;
+                const mission = missionMap[s.mission_id];
+                workerStats[s.user_id].earned += mission ? (Number(mission.reward) || 0) : 0;
+            });
+
+            const profileMap = {};
+            rawProfiles.forEach(p => profileMap[p.id] = p);
+
+            const sorted = Object.entries(workerStats)
+                .sort((a, b) => b[1].count - a[1].count)
+                .slice(0, 10);
+
+            const tbody = document.getElementById('topWorkersBody');
+
+            if (sorted.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:2rem;color:var(--text-muted)">Belum ada data pasukan.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = sorted.map(([userId, stats], i) => {
+                const profile = profileMap[userId] || {};
+                const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'rank-default';
+                return `
+                    <tr>
+                        <td><span class="rank-badge ${rankClass}">${i + 1}</span></td>
+                        <td style="color:var(--text-primary);font-weight:600">${profile.username || `User ${userId}`}</td>
+                        <td>${stats.count} misi</td>
+                        <td style="color:var(--accent-green)">Rp ${stats.earned.toLocaleString('id-ID')}</td>
+                        <td>Rp ${(Number(profile.balance) || 0).toLocaleString('id-ID')}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // ──────────────────────────────────────────
+        // INIT
+        // ──────────────────────────────────────────
+        fetchAllData();
+
+        // Auto-refresh every 60 seconds
+        setInterval(fetchAllData, 60000);
+    </script>
+</body>
+
+</html>

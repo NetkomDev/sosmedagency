@@ -1,0 +1,259 @@
+/* ═══════════════════════════════════════════════════════════
+   MisiCuan — Global Design Tokens
+   Single source of truth for all pages (landing, admin, etc.)
+   Import this file FIRST in every HTML page
+   ═══════════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+    /* ─── Core Background ─── */
+    --mc-bg-primary: #0F172A;
+    --mc-bg-secondary: #1E293B;
+    --mc-bg-tertiary: #334155;
+    --mc-bg-card: rgba(30, 41, 59, 0.6);
+    --mc-bg-card-solid: #1E293B;
+    --mc-bg-input: rgba(15, 23, 42, 0.7);
+    --mc-bg-glass: rgba(255, 255, 255, 0.05);
+
+    /* ─── Border ─── */
+    --mc-border: rgba(255, 255, 255, 0.08);
+    --mc-border-subtle: rgba(255, 255, 255, 0.05);
+    --mc-border-hover: rgba(56, 189, 248, 0.25);
+    --mc-border-focus: rgba(56, 189, 248, 0.5);
+
+    /* ─── Text ─── */
+    --mc-text-primary: #F8FAFC;
+    --mc-text-secondary: #CBD5E1;
+    --mc-text-muted: #94A3B8;
+    --mc-text-faint: #64748B;
+
+    /* ─── Accent Colors ─── */
+    --mc-accent: #38BDF8;
+    /* Sky-400 — Primary accent */
+    --mc-accent-deep: #0EA5E9;
+    /* Sky-500 — Deeper accent */
+    --mc-accent-glow: rgba(56, 189, 248, 0.15);
+
+    --mc-cyan: #22D3EE;
+    /* Cyan-400 */
+    --mc-purple: #A78BFA;
+    /* Violet-400 */
+    --mc-emerald: #34D399;
+    /* Emerald-400 */
+    --mc-amber: #FBBF24;
+    /* Amber-400 */
+    --mc-rose: #FB7185;
+    /* Rose-400 */
+    --mc-orange: #FB923C;
+    /* Orange-400 */
+
+    /* ─── Semantic Colors ─── */
+    --mc-success: #34D399;
+    --mc-warning: #FBBF24;
+    --mc-danger: #FB7185;
+    --mc-info: #38BDF8;
+
+    /* ─── Gradient ─── */
+    --mc-gradient-brand: linear-gradient(135deg, #38BDF8, #A78BFA);
+    --mc-gradient-warm: linear-gradient(135deg, #FB923C, #F43F5E);
+    --mc-gradient-cool: linear-gradient(135deg, #22D3EE, #6366F1);
+
+    /* ─── Shadows ─── */
+    --mc-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+    --mc-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+    --mc-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+    --mc-shadow-accent: 0 4px 16px rgba(56, 189, 248, 0.15);
+
+    /* ─── Radius ─── */
+    --mc-radius-sm: 0.5rem;
+    --mc-radius-md: 0.75rem;
+    --mc-radius-lg: 1rem;
+    --mc-radius-xl: 1.25rem;
+    --mc-radius-2xl: 1.5rem;
+
+    /* ─── Typography ─── */
+    --mc-font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+/* ─── Base Reset ─── */
+body {
+    font-family: var(--mc-font);
+    background: var(--mc-bg-primary);
+    color: var(--mc-text-primary);
+}
+
+/* ─── Utility: Glass Card ─── */
+.mc-glass {
+    background: var(--mc-bg-glass);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--mc-border);
+}
+
+.mc-card {
+    background: var(--mc-bg-card);
+    border: 1px solid var(--mc-border);
+    border-radius: var(--mc-radius-2xl);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* ─── Utility: Inputs ─── */
+.mc-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: var(--mc-radius-xl);
+    background: var(--mc-bg-input);
+    border: 1px solid var(--mc-border);
+    color: var(--mc-text-primary);
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.mc-input:focus {
+    border-color: var(--mc-border-focus);
+    box-shadow: 0 0 0 3px var(--mc-accent-glow);
+}
+
+.mc-input::placeholder {
+    color: var(--mc-text-faint);
+}
+
+/* ─── Utility: Labels ─── */
+.mc-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--mc-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+/* ─── Utility: Buttons ─── */
+.mc-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    background: var(--mc-accent);
+    color: var(--mc-bg-primary);
+    font-size: 0.875rem;
+    font-weight: 700;
+    border-radius: var(--mc-radius-xl);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+    box-shadow: var(--mc-shadow-accent);
+}
+
+.mc-btn-primary:hover {
+    background: var(--mc-accent-deep);
+    transform: translateY(-1px);
+}
+
+.mc-btn-ghost {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    background: var(--mc-accent-glow);
+    color: var(--mc-accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: var(--mc-radius-xl);
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mc-btn-ghost:hover {
+    background: rgba(56, 189, 248, 0.2);
+    border-color: rgba(56, 189, 248, 0.3);
+}
+
+.mc-btn-danger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    background: rgba(251, 113, 133, 0.1);
+    color: var(--mc-rose);
+    font-size: 0.75rem;
+    font-weight: 700;
+    border-radius: var(--mc-radius-xl);
+    border: 1px solid rgba(251, 113, 133, 0.15);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.mc-btn-danger:hover {
+    background: rgba(251, 113, 133, 0.2);
+    border-color: rgba(251, 113, 133, 0.3);
+}
+
+/* ─── Utility: Section Header ─── */
+.mc-section-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--mc-border);
+}
+
+.mc-section-header .mc-icon {
+    padding: 0.5rem;
+    border-radius: var(--mc-radius-lg);
+    font-size: 1.125rem;
+    line-height: 1;
+}
+
+.mc-section-header h3 {
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--mc-text-primary);
+}
+
+.mc-section-header p {
+    font-size: 0.75rem;
+    color: var(--mc-text-faint);
+}
+
+/* ─── Utility: Checkbox Cards ─── */
+.mc-checkbox-card {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(15, 23, 42, 0.4);
+    border: 1px solid var(--mc-border);
+    border-radius: var(--mc-radius-xl);
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.mc-checkbox-card:hover {
+    border-color: var(--mc-border-hover);
+}
+
+.mc-checkbox-card input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--mc-accent);
+    border-radius: 0.25rem;
+}
+
+/* ─── Ambient Glow Animation ─── */
+@keyframes mc-ambient-glow {
+
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}

@@ -1,0 +1,1029 @@
+/* ═══════════════════════════════════════════════════════════
+   MisiCuan Admin — Dark Futuristic Theme
+   Shared across: admin.html, login.html, dashboard.html
+   Depends on: theme.css (global design tokens)
+   ═══════════════════════════════════════════════════════════ */
+
+/* Map legacy variables to global theme tokens */
+:root {
+    --bg-primary: var(--mc-bg-primary);
+    --bg-secondary: var(--mc-bg-secondary);
+    --bg-card: var(--mc-bg-card);
+    --bg-card-solid: var(--mc-bg-card-solid);
+    --bg-input: var(--mc-bg-input);
+    --border: var(--mc-border);
+    --border-hover: var(--mc-border-hover);
+    --border-focus: var(--mc-border-focus);
+    --text-primary: var(--mc-text-primary);
+    --text-secondary: var(--mc-text-secondary);
+    --text-muted: var(--mc-text-faint);
+    --accent: var(--mc-accent);
+    --accent-cyan: var(--mc-cyan);
+    --accent-green: var(--mc-emerald);
+    --accent-purple: var(--mc-purple);
+    --accent-orange: var(--mc-orange);
+    --accent-red: var(--mc-rose);
+    --accent-yellow: var(--mc-amber);
+}
+
+/* ── Base ─────────────────────────────────────── */
+body {
+    font-family: var(--mc-font) !important;
+    background: var(--mc-bg-primary) !important;
+    color: var(--mc-text-primary) !important;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(ellipse 80% 50% at 20% 40%, rgba(56, 189, 248, 0.04), transparent),
+        radial-gradient(ellipse 60% 40% at 80% 20%, rgba(167, 139, 250, 0.04), transparent),
+        radial-gradient(ellipse 50% 60% at 50% 80%, rgba(34, 211, 238, 0.03), transparent);
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* ── Sidebar ──────────────────────────────────── */
+aside,
+.sidebar {
+    background: rgba(15, 23, 42, 0.95) !important;
+    border-color: var(--border) !important;
+    backdrop-filter: blur(20px);
+}
+
+aside .text-2xl,
+aside h1 {
+    background: linear-gradient(135deg, var(--accent), var(--accent-purple)) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+aside .text-gray-400.text-sm {
+    -webkit-text-fill-color: var(--text-muted) !important;
+}
+
+aside .border-gray-100,
+aside .border-gray-200 {
+    border-color: var(--border) !important;
+}
+
+/* Nav items */
+.nav-item,
+aside a,
+aside button {
+    color: var(--text-secondary) !important;
+    transition: all 0.2s ease !important;
+}
+
+.nav-item:hover,
+aside a:hover {
+    background: rgba(56, 189, 248, 0.08) !important;
+    color: var(--text-primary) !important;
+}
+
+.nav-item svg,
+aside a svg,
+aside button svg {
+    color: var(--text-muted) !important;
+}
+
+.nav-item:hover svg {
+    color: var(--accent-cyan) !important;
+}
+
+.nav-item.bg-blue-50,
+.nav-item.text-blue-600 {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(167, 139, 250, 0.06)) !important;
+    color: var(--accent) !important;
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    border-radius: 0.75rem;
+}
+
+.nav-item.bg-blue-50 svg,
+.nav-item.text-blue-600 svg {
+    color: var(--accent-cyan) !important;
+}
+
+/* Nav divider */
+aside .text-xs.font-semibold.text-gray-400,
+.px-4.text-xs.font-semibold {
+    color: var(--text-muted) !important;
+}
+
+/* Logout */
+aside .text-red-600,
+aside button.text-red-600,
+.nav-item.text-red-600 {
+    color: var(--accent-red) !important;
+}
+
+aside .text-red-600:hover {
+    background: rgba(239, 68, 68, 0.08) !important;
+}
+
+/* ── Main Content Area ────────────────────────── */
+main,
+.main-content {
+    background: transparent !important;
+    position: relative;
+    z-index: 1;
+}
+
+/* ── Section Titles ───────────────────────────── */
+h2.text-2xl,
+h2.text-xl,
+h3.text-xl {
+    color: var(--text-primary) !important;
+}
+
+/* ── Cards & Panels ───────────────────────────── */
+.bg-white,
+div[class*="bg-white"] {
+    background: var(--bg-card) !important;
+    border-color: var(--border) !important;
+    backdrop-filter: blur(10px);
+}
+
+.bg-gray-50,
+div[class*="bg-gray-50"] {
+    background: rgba(15, 23, 42, 0.5) !important;
+}
+
+/* Special panels */
+.bg-blue-50 {
+    background: rgba(56, 189, 248, 0.08) !important;
+}
+
+.bg-green-50 {
+    background: rgba(16, 185, 129, 0.08) !important;
+}
+
+.bg-purple-50 {
+    background: rgba(167, 139, 250, 0.08) !important;
+}
+
+.bg-red-50 {
+    background: rgba(239, 68, 68, 0.08) !important;
+}
+
+.bg-yellow-50 {
+    background: rgba(234, 179, 8, 0.08) !important;
+}
+
+.bg-orange-50 {
+    background: rgba(249, 115, 22, 0.08) !important;
+}
+
+/* ── Borders ──────────────────────────────────── */
+.border-gray-100,
+.border-gray-200,
+.border-gray-300,
+.divide-gray-100>*+* {
+    border-color: var(--border) !important;
+}
+
+.border-blue-100 {
+    border-color: rgba(56, 189, 248, 0.15) !important;
+}
+
+.border-green-100 {
+    border-color: rgba(16, 185, 129, 0.2) !important;
+}
+
+.border-purple-100 {
+    border-color: rgba(167, 139, 250, 0.2) !important;
+}
+
+/* ── Text Colors ──────────────────────────────── */
+.text-gray-900 {
+    color: #ffffff !important;
+}
+
+.text-gray-800 {
+    color: var(--text-primary) !important;
+}
+
+.text-gray-700 {
+    color: var(--text-primary) !important;
+}
+
+.text-gray-600 {
+    color: #cbd5e1 !important;
+}
+
+.text-gray-500 {
+    color: #94a3b8 !important;
+}
+
+.text-gray-400 {
+    color: #94a3b8 !important;
+}
+
+.text-blue-800 {
+    color: var(--accent) !important;
+}
+
+.text-blue-700 {
+    color: var(--accent) !important;
+}
+
+.text-blue-600 {
+    color: var(--accent) !important;
+}
+
+.text-blue-400 {
+    color: var(--accent) !important;
+}
+
+.text-green-800,
+.text-green-700 {
+    color: #6ee7b7 !important;
+}
+
+.text-purple-900,
+.text-purple-700 {
+    color: #c4b5fd !important;
+}
+
+/* ── Tables ───────────────────────────────────── */
+table {
+    color: var(--text-primary) !important;
+}
+
+thead tr {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.12), rgba(34, 211, 238, 0.06)) !important;
+}
+
+thead th {
+    color: var(--accent-cyan) !important;
+    border-color: var(--border) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.05em !important;
+}
+
+tbody td {
+    border-color: rgba(56, 189, 248, 0.08) !important;
+    color: #cbd5e1 !important;
+}
+
+tbody tr {
+    transition: background 0.2s ease !important;
+}
+
+tbody tr:hover {
+    background: rgba(56, 189, 248, 0.08) !important;
+}
+
+tbody tr:nth-child(even) {
+    background: rgba(15, 23, 42, 0.3) !important;
+}
+
+/* Table cells with specific colors */
+td .text-gray-800,
+td .font-bold.text-gray-800,
+td .font-bold,
+td .font-semibold {
+    color: #f1f5f9 !important;
+}
+
+/* Nama paket — putih cerah & bold */
+td .text-gray-800.font-bold,
+td .font-bold.text-gray-800,
+td .font-medium {
+    color: #ffffff !important;
+}
+
+/* Harga — warna cerah hijau/cyan */
+td .text-blue-600,
+td .text-green-600,
+td .text-emerald-600,
+td .font-bold[class*="text-"] {
+    color: var(--accent-cyan) !important;
+}
+
+/* Category headers di tabel (FACEBOOK, GOOGLE MAPS, dst) */
+td[colspan] {
+    color: var(--accent-cyan) !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.08em !important;
+    background: rgba(56, 189, 248, 0.06) !important;
+    font-style: normal !important;
+}
+
+/* Fitur/features text — lebih cerah */
+td .text-gray-500,
+td .text-gray-600,
+td .text-sm.text-gray-500 {
+    color: #94a3b8 !important;
+}
+
+/* ── Inputs & Selects ─────────────────────────── */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="url"],
+input[type="tel"],
+input[type="search"],
+textarea,
+select,
+.input-field {
+    background: var(--bg-input) !important;
+    border-color: var(--border) !important;
+    color: var(--text-primary) !important;
+    caret-color: var(--accent-cyan);
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.input-field:focus {
+    background: rgba(15, 23, 42, 1) !important;
+    border-color: var(--border-focus) !important;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1) !important;
+    outline: none !important;
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: var(--text-muted) !important;
+}
+
+/* Select arrows */
+select option {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+/* Labels */
+label {
+    color: var(--text-muted) !important;
+}
+
+/* ── Buttons ──────────────────────────────────── */
+/* Primary buttons keep their gradient */
+.bg-blue-600,
+button[class*="bg-blue-600"] {
+    background: linear-gradient(135deg, var(--accent), #818cf8) !important;
+    border: none !important;
+}
+
+.bg-blue-600:hover {
+    background: linear-gradient(135deg, #0EA5E9, #38BDF8) !important;
+}
+
+/* Secondary buttons */
+.bg-blue-100 {
+    background: rgba(56, 189, 248, 0.12) !important;
+    color: #93c5fd !important;
+}
+
+.bg-blue-100:hover {
+    background: rgba(56, 189, 248, 0.2) !important;
+}
+
+.bg-green-100 {
+    background: rgba(16, 185, 129, 0.12) !important;
+    color: #6ee7b7 !important;
+}
+
+.bg-green-100:hover {
+    background: rgba(16, 185, 129, 0.2) !important;
+}
+
+.bg-purple-100 {
+    background: rgba(167, 139, 250, 0.12) !important;
+    color: #c4b5fd !important;
+}
+
+.bg-purple-100:hover {
+    background: rgba(167, 139, 250, 0.2) !important;
+}
+
+.bg-red-100 {
+    background: rgba(239, 68, 68, 0.12) !important;
+    color: #fca5a5 !important;
+}
+
+.bg-red-100:hover {
+    background: rgba(239, 68, 68, 0.2) !important;
+}
+
+/* Status badges */
+.bg-green-100.text-green-600,
+.bg-green-100.text-green-700,
+.bg-green-100.text-green-800 {
+    background: rgba(16, 185, 129, 0.15) !important;
+    color: var(--accent-green) !important;
+}
+
+.bg-yellow-100 {
+    background: rgba(234, 179, 8, 0.12) !important;
+    color: var(--accent-yellow) !important;
+}
+
+.bg-red-600 {
+    background: linear-gradient(135deg, var(--accent-red), #dc2626) !important;
+}
+
+/* Gray/dark buttons */
+.bg-gray-900 {
+    background: linear-gradient(135deg, var(--accent), var(--accent-purple)) !important;
+}
+
+.bg-gray-900:hover {
+    background: linear-gradient(135deg, #0EA5E9, #7c3aed) !important;
+}
+
+/* ── Modals ───────────────────────────────────── */
+.bg-black\/50,
+.bg-black\/60 {
+    background: rgba(0, 0, 0, 0.7) !important;
+    backdrop-filter: blur(8px) !important;
+}
+
+/* Modal Content */
+#globalPricingModal>div,
+#packageModal>div,
+#aiModal>div {
+    background: var(--bg-card-solid) !important;
+    border: 1px solid var(--border) !important;
+    box-shadow: 0 0 60px rgba(56, 189, 248, 0.1) !important;
+}
+
+/* Modal headers */
+#globalPricingModal .sticky,
+#packageModal .bg-gray-50\/50,
+.px-6.py-4.border-b {
+    background: rgba(15, 23, 42, 0.8) !important;
+    border-color: var(--border) !important;
+}
+
+/* ── Form gradient header ─────────────────────── */
+.bg-gradient-to-r.from-blue-600.to-indigo-600 {
+    background: linear-gradient(135deg, rgba(56, 189, 248, 0.3), rgba(167, 139, 250, 0.2)) !important;
+    border-bottom: 1px solid var(--border);
+}
+
+/* ── Shadow overrides ─────────────────────────── */
+.shadow-sm,
+.shadow,
+.shadow-md,
+.shadow-lg,
+.shadow-xl,
+.shadow-2xl {
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3) !important;
+}
+
+/* Glass effect shadow for cards */
+.rounded-xl.shadow-sm.border,
+.rounded-2xl.shadow-xl.border {
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.03) !important;
+}
+
+/* ── Scrollbar ────────────────────────────────── */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(56, 189, 248, 0.2);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(56, 189, 248, 0.3);
+}
+
+/* ── Status Tags ──────────────────────────────── */
+.bg-green-500,
+.bg-green-600 {
+    background: var(--accent-green) !important;
+}
+
+.bg-blue-500 {
+    background: var(--accent) !important;
+}
+
+/* ── Misc ─────────────────────────────────────── */
+.animate-pulse {
+    animation: dark-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes dark-pulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Real-time status */
+#realtime-status {
+    background: rgba(15, 23, 42, 0.6) !important;
+    border-color: var(--border) !important;
+    color: var(--text-muted) !important;
+}
+
+/* Refresh/action text buttons */
+.text-blue-600.hover\:text-blue-800 {
+    color: var(--accent-cyan) !important;
+}
+
+.text-blue-600.hover\:text-blue-800:hover {
+    color: var(--accent) !important;
+}
+
+/* Mobile header */
+.md\:hidden h1 {
+    background: linear-gradient(135deg, var(--accent), var(--accent-cyan)) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+/* Hover bg on mobile */
+.hover\:bg-gray-100:hover {
+    background: rgba(56, 189, 248, 0.08) !important;
+}
+
+.hover\:bg-gray-50:hover {
+    background: rgba(56, 189, 248, 0.08) !important;
+}
+
+/* ── Margin Buttons ───────────────────────────── */
+.btn-margin {
+    background: rgba(15, 23, 42, 0.6) !important;
+    border-color: var(--border) !important;
+    color: var(--accent-green) !important;
+}
+
+.btn-margin:hover {
+    background: rgba(16, 185, 129, 0.1) !important;
+    border-color: rgba(16, 185, 129, 0.3) !important;
+}
+
+/* ── Pricing prefix ───────────────────────────── */
+.absolute.left-3.top-2.text-gray-400 {
+    color: var(--text-muted) !important;
+}
+
+/* ── Purple AI section ────────────────────────── */
+.bg-purple-600 {
+    background: var(--accent-purple) !important;
+}
+
+.bg-purple-600:hover {
+    background: #9333ea !important;
+}
+
+.bg-purple-50 {
+    background: rgba(167, 139, 250, 0.08) !important;
+}
+
+/* ── Verified badge override ──────────────────── */
+.bg-green-600.text-white {
+    background: var(--accent-green) !important;
+    color: var(--bg-primary) !important;
+    font-weight: 700;
+}
+
+/* ── Card hover transitions ───────────────────── */
+.bg-white.rounded-xl,
+.bg-white.rounded-2xl {
+    transition: all 0.3s ease !important;
+}
+
+.bg-white.rounded-xl:hover,
+.bg-white.rounded-2xl:hover {
+    border-color: var(--border-hover) !important;
+}
+
+/* ── Empty state text ─────────────────────────── */
+td[colspan] {
+    color: var(--text-muted) !important;
+}
+
+/* ── Links ────────────────────────────────────── */
+a.text-blue-400,
+a.text-blue-500,
+a.text-blue-600 {
+    color: var(--accent-cyan) !important;
+}
+
+a.text-blue-400:hover,
+a.text-blue-500:hover,
+a.text-blue-600:hover {
+    color: var(--accent) !important;
+}
+
+/* Glow accent line top of sidebar brand */
+aside>div:first-child::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-cyan), var(--accent-purple));
+}
+
+aside>div:first-child {
+    position: relative;
+}
+
+/* ── Additional Polish ────────────────────────── */
+
+/* Rings & Focus */
+.ring-1,
+.ring-2 {
+    --tw-ring-color: var(--border) !important;
+}
+
+.focus\:ring-blue-500:focus {
+    --tw-ring-color: rgba(56, 189, 248, 0.4) !important;
+}
+
+/* Checkbox & Toggle */
+input[type="checkbox"] {
+    accent-color: var(--accent-cyan);
+}
+
+/* Rounded badges / pills */
+.rounded-full[class*="bg-"] {
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Code blocks inside cards */
+code {
+    background: rgba(56, 189, 248, 0.1) !important;
+    color: var(--accent-cyan) !important;
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.85em;
+}
+
+/* Smooth transitions on all cards */
+.bg-white.rounded-xl,
+.bg-white.rounded-2xl,
+.bg-white.rounded-lg {
+    transition: all 0.3s ease !important;
+}
+
+/* Image preview area */
+img {
+    border-radius: 0.5rem;
+}
+
+/* Tooltip styles */
+[title]:hover::after {
+    background: var(--bg-card) !important;
+    color: var(--text-primary) !important;
+}
+
+/* Better spacing for mobile nav */
+@media (max-width: 768px) {
+    aside {
+        position: fixed !important;
+        z-index: 999 !important;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease !important;
+    }
+
+    aside.open {
+        transform: translateX(0) !important;
+    }
+
+    .md\\:hidden {
+        position: sticky;
+        top: 0;
+        z-index: 50;
+        background: rgba(10, 14, 26, 0.95) !important;
+        backdrop-filter: blur(20px);
+        padding: 1rem !important;
+        border-bottom: 1px solid var(--border);
+    }
+}
+
+/* Empty table state */
+td[colspan] {
+    text-align: center;
+    font-style: italic;
+}
+
+/* Skeleton loading */
+.animate-pulse {
+    background: linear-gradient(90deg,
+            rgba(56, 189, 248, 0.05) 25%,
+            rgba(56, 189, 248, 0.1) 50%,
+            rgba(56, 189, 248, 0.05) 75%) !important;
+    background-size: 200% 100% !important;
+    animation: shimmer 1.5s ease-in-out infinite !important;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Pages Theme Overrides (Global for all Sections)
+   Applies consistent styling to Orders, Missions, Queue, Packages
+   ═══════════════════════════════════════════════════════════ */
+
+/* Section Headers - Gradient Text */
+.admin-section h2 {
+    background: linear-gradient(135deg, var(--mc-text-primary), var(--mc-text-secondary)) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    color: transparent !important;
+    display: flex;
+    align-items: center;
+}
+
+/* Secondary Buttons (Refresh/Export/Import) inside Sections */
+.admin-section button.bg-purple-100,
+.admin-section button.bg-green-100,
+.admin-section button.bg-blue-100 {
+    background: rgba(var(--mc-accent-rgb), 0.1) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(4px);
+}
+
+.admin-section button.bg-purple-100 {
+    background: rgba(167, 139, 250, 0.1) !important;
+    color: var(--mc-purple) !important;
+    border-color: rgba(167, 139, 250, 0.2) !important;
+}
+
+.admin-section button.bg-green-100 {
+    background: rgba(16, 185, 129, 0.1) !important;
+    color: var(--mc-emerald) !important;
+    border-color: rgba(16, 185, 129, 0.2) !important;
+}
+
+.admin-section button.bg-blue-100 {
+    background: rgba(56, 189, 248, 0.1) !important;
+    color: var(--mc-cyan) !important;
+    border-color: rgba(56, 189, 248, 0.2) !important;
+}
+
+/* Hover effects for buttons */
+.admin-section button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Table Header consistency */
+.admin-section table thead tr {
+    background: linear-gradient(90deg, rgba(15, 23, 42, 0.8), rgba(30, 41, 59, 0.8)) !important;
+    border-bottom: 1px solid var(--border) !important;
+}
+
+.admin-section table th {
+    color: var(--mc-text-secondary) !important;
+    font-weight: 600 !important;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+/* Empty State / Loading State styling */
+.admin-section table td[colspan] {
+    padding: 3rem !important;
+    color: var(--mc-text-muted) !important;
+    font-style: italic;
+    background: rgba(15, 23, 42, 0.3);
+}
+
+/* Modal Inputs & Selects (Global) */
+.fixed.inset-0 input,
+.fixed.inset-0 select,
+.fixed.inset-0 textarea {
+    background: rgba(15, 23, 42, 0.8) !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--mc-text-primary) !important;
+}
+
+.fixed.inset-0 input:focus,
+.fixed.inset-0 select:focus,
+.fixed.inset-0 textarea:focus {
+    border-color: var(--mc-accent) !important;
+    box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2) !important;
+}
+
+/* Glassmorphism Cards for Admin Sections (Tables, Forms) */
+.admin-section .bg-white,
+.admin-section .bg-gray-50 {
+    background: rgba(15, 23, 42, 0.6) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    backdrop-filter: blur(12px) !important;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Pagination Styling */
+.admin-section nav button,
+.admin-section nav a,
+.pagination-btn {
+    background: transparent !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+    color: var(--mc-text-secondary) !important;
+    transition: all 0.2s ease;
+}
+
+.admin-section nav button:hover,
+.admin-section nav a:hover,
+.pagination-btn:hover {
+    background: rgba(56, 189, 248, 0.1) !important;
+    color: var(--mc-accent) !important;
+    border-color: var(--mc-accent) !important;
+    transform: translateY(-1px);
+}
+
+.admin-section nav .z-10,
+.admin-section nav [aria-current="page"],
+.pagination-active {
+    background: rgba(56, 189, 248, 0.15) !important;
+    color: var(--mc-accent-cyan) !important;
+    border-color: var(--mc-accent-cyan) !important;
+    font-weight: bold;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.2);
+}
+
+/* Small text readability fix & tweaks */
+.admin-section .text-xs,
+.admin-section .text-sm {
+    opacity: 0.9;
+}
+
+.admin-section .bg-gray-300 {
+    background: rgba(148, 163, 184, 0.5) !important;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   Settings Page — Theme Override (match main website colors)
+   Replaces indigo-* inline classes with sky/violet accents
+   ═══════════════════════════════════════════════════════════ */
+
+/* Card containers */
+#section-settings .bg-slate-800\/50 {
+    background: rgba(30, 41, 59, 0.5) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Section header borders */
+#section-settings .border-b.border-indigo-500\/10,
+#section-settings .border-indigo-500\/10 {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Icon badges — unified glow style */
+#section-settings .bg-indigo-500\/15 {
+    background: rgba(56, 189, 248, 0.12) !important;
+    color: var(--mc-accent) !important;
+}
+
+#section-settings .text-indigo-400 {
+    color: var(--mc-accent) !important;
+}
+
+/* Input fields */
+#section-settings input[type="text"],
+#section-settings input[type="url"],
+#section-settings input[type="email"],
+#section-settings input[type="number"],
+#section-settings textarea,
+#section-settings select {
+    background: rgba(15, 23, 42, 0.6) !important;
+    border-color: rgba(255, 255, 255, 0.08) !important;
+    color: var(--mc-text-primary) !important;
+    caret-color: var(--mc-accent);
+}
+
+#section-settings input:focus,
+#section-settings textarea:focus,
+#section-settings select:focus {
+    border-color: rgba(56, 189, 248, 0.4) !important;
+    box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1) !important;
+}
+
+#section-settings input::placeholder,
+#section-settings textarea::placeholder {
+    color: var(--mc-text-faint) !important;
+}
+
+/* Labels */
+#section-settings label.block {
+    color: var(--mc-text-muted) !important;
+}
+
+/* Select option background */
+#section-settings select option {
+    background: var(--mc-bg-secondary) !important;
+    color: var(--mc-text-primary) !important;
+}
+
+/* Save button */
+#section-settings .bg-indigo-600 {
+    background: var(--mc-accent) !important;
+    color: var(--mc-bg-primary) !important;
+    box-shadow: 0 4px 16px rgba(56, 189, 248, 0.2) !important;
+}
+
+#section-settings .bg-indigo-600:hover,
+#section-settings .hover\:bg-indigo-500:hover {
+    background: var(--mc-accent-deep) !important;
+}
+
+/* Checkbox cards (platforms & features) */
+#section-settings .bg-slate-900\/40 {
+    background: rgba(15, 23, 42, 0.4) !important;
+    border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+#section-settings .bg-slate-900\/40:hover {
+    border-color: rgba(56, 189, 248, 0.2) !important;
+}
+
+/* Checkbox accent */
+#section-settings input[type="checkbox"] {
+    accent-color: var(--mc-accent) !important;
+}
+
+/* QRIS preview box */
+#section-settings .border-dashed {
+    border-color: rgba(255, 255, 255, 0.12) !important;
+}
+
+#section-settings .bg-slate-900\/80 {
+    background: rgba(15, 23, 42, 0.6) !important;
+}
+
+/* Danger zone buttons */
+#section-settings .bg-indigo-500\/10 {
+    background: rgba(56, 189, 248, 0.08) !important;
+}
+
+#section-settings .border-indigo-500\/20 {
+    border-color: rgba(56, 189, 248, 0.15) !important;
+}
+
+#section-settings .text-cyan-400 {
+    color: var(--mc-accent) !important;
+}
+
+/* Danger zone border top */
+#section-settings .border-t.border-indigo-500\/10 {
+    border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Mobile header brand — match main site gradient */
+.md\:hidden h1 {
+    background: linear-gradient(135deg, var(--accent), var(--accent-purple)) !important;
+    -webkit-background-clip: text !important;
+    background-clip: text !important;
+    -webkit-text-fill-color: transparent !important;
+}
+
+/* ── Print styles (clean output) ──────────────── */
+@media print {
+    body::before {
+        display: none !important;
+    }
+
+    aside {
+        display: none !important;
+    }
+
+    main {
+        margin: 0 !important;
+    }
+
+    .bg-white {
+        background: white !important;
+    }
+
+    * {
+        color: black !important;
+    }
+}

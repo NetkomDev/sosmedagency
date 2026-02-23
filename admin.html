@@ -1,0 +1,1739 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sosmed Agency Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="style.css" rel="stylesheet">
+    <link href="theme.css" rel="stylesheet">
+    <link href="admin-dark.css" rel="stylesheet">
+    <script type="module">
+        import { SUPABASE_URL, SUPABASE_ANON_KEY } from './supabase.js';
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Auth Check
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) {
+            window.location.href = 'login.html';
+        }
+
+        // Logout Global Function
+        window.logout = async () => {
+            const { error } = await supabase.auth.signOut();
+            if (!error) window.location.href = 'login.html';
+        };
+    </script>
+</head>
+
+<body class="bg-gray-50 font-sans text-gray-800">
+
+    <!-- Global Pricing Modal (Renamed & Relocated) -->
+    <div id="globalPricingModal"
+        class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-[9999] backdrop-blur-sm">
+        <div
+            class="bg-white rounded-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto shadow-2xl transform transition-all">
+            <div class="sticky top-0 bg-white p-6 border-b border-gray-100 flex justify-between items-center z-10">
+                <h3 class="text-xl font-bold text-gray-800">💸 Global Pricing & Margin</h3>
+                <button onclick="window.closePricingModal()" class="text-gray-400 hover:text-gray-600 transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-8">
+                <!-- 1. Worker Rates Configuration -->
+                <div class="bg-blue-50 p-5 rounded-xl border border-blue-100">
+                    <h4 class="text-sm font-bold text-blue-800 uppercase mb-4 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z">
+                            </path>
+                        </svg>
+                        Base Worker Rates (Harga ke Pasukan)
+                    </h4>
+                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Follow/Sub</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-2 text-gray-400 font-bold text-xs">Rp</span>
+                                <input type="number" id="rateFollow" value="400"
+                                    class="w-full pl-8 px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none font-bold text-gray-700">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Like</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-2 text-gray-400 font-bold text-xs">Rp</span>
+                                <input type="number" id="rateLike" value="150"
+                                    class="w-full pl-8 px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none font-bold text-gray-700">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">View</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-2 text-gray-400 font-bold text-xs">Rp</span>
+                                <input type="number" id="rateView" value="25"
+                                    class="w-full pl-8 px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none font-bold text-gray-700">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Comment</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-2 text-gray-400 font-bold text-xs">Rp</span>
+                                <input type="number" id="rateComment" value="500"
+                                    class="w-full pl-8 px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none font-bold text-gray-700">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Review/Rating</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-2 text-gray-400 font-bold text-xs">Rp</span>
+                                <input type="number" id="rateReview" value="2500"
+                                    class="w-full pl-8 px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none font-bold text-gray-700">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold text-gray-500 mb-1">Share/Other</label>
+                            <div class="relative">
+                                <span class="absolute left-3 top-2 text-gray-400 font-bold text-xs">Rp</span>
+                                <input type="number" id="rateOther" value="200"
+                                    class="w-full pl-8 px-3 py-2 rounded-lg border border-gray-300 focus:border-blue-500 outline-none font-bold text-gray-700">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Target Margin Selection -->
+                <div class="bg-green-50 p-5 rounded-xl border border-green-100">
+                    <h4 class="text-sm font-bold text-green-800 uppercase mb-4 flex items-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                            </path>
+                        </svg>
+                        Target Profit Margin (Keuntungan)
+                    </h4>
+                    <div class="grid grid-cols-4 gap-3">
+                        <button onclick="window.selectMargin(10)"
+                            class="btn-margin px-4 py-3 rounded-xl border-2 border-green-200 bg-white hover:bg-green-100 font-bold text-green-700 transition"
+                            data-val="10">10%</button>
+                        <button onclick="window.selectMargin(20)"
+                            class="btn-margin px-4 py-3 rounded-xl border-2 border-green-200 bg-white hover:bg-green-100 font-bold text-green-700 transition"
+                            data-val="20">20%</button>
+                        <button onclick="window.selectMargin(30)"
+                            class="btn-margin px-4 py-3 rounded-xl border-2 border-green-200 bg-white hover:bg-green-100 font-bold text-green-700 transition"
+                            data-val="30">30%</button>
+                        <button onclick="window.selectMargin(40)"
+                            class="btn-margin px-4 py-3 rounded-xl border-2 border-green-200 bg-white hover:bg-green-100 font-bold text-green-700 transition"
+                            data-val="40">40%</button>
+                    </div>
+                    <input type="hidden" id="selectedMargin" value="0">
+                    <p class="text-xs text-gray-500 mt-3 text-center">
+                        Memilih margin kecil = <b>Jumlah Paket (Qty) Lebih Besar</b> (Lebih menarik pembeli).<br>
+                        Memilih margin besar = <b>Jumlah Paket (Qty) Lebih Sedikit</b> (Lebih cuan).
+                    </p>
+                </div>
+
+                <!-- 3. Execution -->
+                <div class="border-t border-gray-100 pt-6">
+                    <button onclick="window.applyPricingStrategy()" id="btnApplyPricing"
+                        class="w-full bg-gray-900 hover:bg-black text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transition flex items-center justify-center gap-3">
+                        <span>⚡ Apply to All Packages</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-gray-200 flex flex-col hidden md:flex">
+            <div class="p-6 border-b border-gray-100">
+                <h1 class="text-2xl font-black text-blue-600 tracking-tighter">Sosmed Agency<span
+                        class="text-gray-400 text-sm font-normal ml-1">Admin</span></h1>
+            </div>
+
+            <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+                <a href="dashboard.html"
+                    class="nav-item flex items-center gap-3 px-4 py-3 text-gray-600 rounded-xl hover:bg-gray-50 hover:text-blue-600 transition group">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z">
+                        </path>
+                    </svg>
+                    <span class="font-medium">📊 Dashboard</span>
+                </a>
+
+                <a href="#" onclick="showSection('orders')" id="nav-orders"
+                    class="nav-item flex items-center gap-3 px-4 py-3 text-gray-600 rounded-xl hover:bg-gray-50 hover:text-blue-600 transition group">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01">
+                        </path>
+                    </svg>
+                    <span class="font-medium">Incoming Orders</span>
+                </a>
+
+                <a href="#" onclick="showSection('active-missions')" id="nav-active-missions"
+                    class="nav-item flex items-center gap-3 px-4 py-3 text-gray-600 rounded-xl hover:bg-gray-50 hover:text-blue-600 transition group">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                        </path>
+                    </svg>
+                    <span class="font-medium">Active Missions</span>
+                </a>
+
+                <!-- HIDDEN: Create Mission (Redundant with Auto-Split) -->
+                <!-- <a href="#" onclick="showSection('missions')" id="nav-missions"
+                    class="nav-item flex items-center gap-3 px-4 py-3 text-gray-600 rounded-xl hover:bg-gray-50 hover:text-blue-600 transition group">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                    </svg>
+                    <span class="font-medium">Create Mission</span>
+                </a> -->
+
+                <a href="#" onclick="showSection('queue')" id="nav-queue"
+                    class="nav-item flex items-center gap-3 px-4 py-3 text-gray-600 rounded-xl hover:bg-gray-50 hover:text-blue-600 transition group">
+                    <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor"
+                        viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span class="font-medium">Submissions</span>
+                </a>
+
+                <div class="pt-4 mt-4 border-t border-gray-100">
+                    <div class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                        User Management
+                    </div>
+
+                    <a href="#" onclick="showSection('users')" id="nav-users"
+                        class="nav-item flex items-center gap-3 px-4 py-3 text-gray-600 rounded-xl hover:bg-gray-50 hover:text-blue-600 transition group">
+                        <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                            </path>
+                        </svg>
+                        <span class="font-medium">Data Pasukan</span>
+                    </a>
+
+                    <a href="#" onclick="showSection('clients')" id="nav-clients"
+                        class="nav-item flex items-center gap-3 px-4 py-3 text-gray-600 rounded-xl hover:bg-gray-50 hover:text-blue-600 transition group">
+                        <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                            </path>
+                        </svg>
+                        <span class="font-medium">Pemesan Layanan</span>
+                    </a>
+                </div>
+
+                <div class="pt-4 mt-4 border-t border-gray-100">
+                    <div class="px-4 text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
+                        Configuration
+                    </div>
+
+                    <a href="#" onclick="showSection('packages')" id="nav-packages"
+                        class="nav-item flex items-center gap-3 px-4 py-3 text-gray-600 rounded-xl hover:bg-gray-50 hover:text-blue-600 transition group">
+                        <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                        </svg>
+                        <span class="font-medium">Packages & Pricing</span>
+                    </a>
+
+                    <a href="#" onclick="showSection('settings')" id="nav-settings"
+                        class="nav-item flex items-center gap-3 px-4 py-3 text-gray-600 rounded-xl hover:bg-gray-50 hover:text-blue-600 transition group">
+                        <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        <span class="font-medium">Global Settings</span>
+                    </a>
+
+                    <a href="analysis.html"
+                        class="nav-item flex items-center gap-3 px-4 py-3 text-gray-600 rounded-xl hover:bg-gray-50 hover:text-blue-600 transition group">
+                        <svg class="w-5 h-5 text-gray-400 group-hover:text-blue-500" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+                            </path>
+                        </svg>
+                        <span class="font-medium">System Analysis</span>
+                    </a>
+
+                    <!-- Logout -->
+                    <button onclick="window.logout()"
+                        class="w-full text-left nav-item flex items-center gap-3 px-4 py-3 text-red-600 rounded-xl hover:bg-red-50 hover:text-red-700 transition group mt-4">
+                        <svg class="w-5 h-5 text-red-400 group-hover:text-red-600" fill="none" stroke="currentColor"
+                            viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1">
+                            </path>
+                        </svg>
+                        <span class="font-medium">Logout</span>
+                    </button>
+
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto h-full p-8">
+            <!-- Mobile Header -->
+            <div class="md:hidden flex items-center justify-between mb-6">
+                <h1 class="text-2xl font-black text-blue-600">Sosmed Agency Admin</h1>
+                <button class="p-2 text-gray-500 rounded-lg hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16m-7 6h7"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Incoming Orders -->
+            <section id="section-orders" class="admin-section hidden">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center justify-between">
+                    <span>Incoming Orders</span>
+                    <div class="flex items-center gap-3">
+                        <div id="realtime-status"
+                            class="flex items-center gap-2 text-xs font-normal text-gray-400 bg-gray-50 px-2 py-1 rounded border border-gray-200 transition-colors duration-300">
+                            <span class="w-2 h-2 rounded-full bg-gray-300 animate-pulse"></span> Connecting...
+                        </div>
+                        <button onclick="window.fetchOrders()"
+                            class="text-sm text-blue-600 hover:text-blue-800 font-medium hover:bg-blue-50 px-2 py-1 rounded transition">Refresh</button>
+                    </div>
+                </h2>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="bg-gray-50 text-xs uppercase tracking-wider text-gray-500 border-b border-gray-100">
+                                    <th class="p-4 font-semibold">Date</th>
+                                    <th class="p-4 font-semibold">User</th>
+                                    <th class="p-4 font-semibold">Package</th>
+                                    <th class="p-4 font-semibold">Unique Price</th>
+                                    <th class="p-4 font-semibold text-center">Status</th>
+                                    <th class="p-4 font-semibold text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersTable" class="text-sm divide-y divide-gray-100">
+                                <tr>
+                                    <td colspan="6" class="p-4 text-center text-gray-400">Loading orders...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Active Missions Section (New) -->
+            <section id="section-active-missions" class="admin-section hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Active Missions</h2>
+                    <button onclick="fetchActiveMissions()"
+                        class="text-sm text-blue-600 hover:text-blue-800 font-medium">Refresh List</button>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="bg-gray-50 text-xs uppercase tracking-wider text-gray-500 border-b border-gray-100">
+                                    <th class="p-4 font-semibold">Title</th>
+                                    <th class="p-4 font-semibold">Platform / Action</th>
+                                    <th class="p-4 font-semibold">Quota (Taken/Total)</th>
+                                    <th class="p-4 font-semibold">Reward</th>
+                                    <th class="p-4 font-semibold text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activeMissionsTable" class="text-sm divide-y divide-gray-100">
+                                <tr>
+                                    <td colspan="5" class="p-4 text-center text-gray-400">Loading missions...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Global Settings -->
+            <section id="section-settings" class="admin-section hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-white">Global Settings</h2>
+                    <div class="flex items-center gap-3">
+                        <span id="settingsSaveStatus" class="text-xs text-slate-500 hidden">✓ Saved</span>
+                        <button onclick="window.saveAllSettings()"
+                            class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2 rounded-xl text-sm font-bold shadow-md shadow-indigo-500/20 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                            💾 Simpan Semua
+                        </button>
+                    </div>
+                </div>
+
+                <div class="space-y-6" id="settingsContainer">
+
+                    <!-- 1. Informasi Bisnis -->
+                    <div
+                        class="bg-slate-800/50 rounded-2xl border border-indigo-500/10 overflow-hidden backdrop-blur-sm">
+                        <div class="px-6 py-4 border-b border-indigo-500/10 flex items-center gap-3">
+                            <span class="bg-indigo-500/15 text-indigo-400 p-2 rounded-xl text-lg">🏢</span>
+                            <div>
+                                <h3 class="font-bold text-white text-sm">Informasi Bisnis</h3>
+                                <p class="text-xs text-slate-500">Nama, kontak, dan identitas bisnis</p>
+                            </div>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Nama
+                                    Bisnis</label>
+                                <input type="text" id="setting-business_name" placeholder="Sosmed Agency"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">No.
+                                    WhatsApp Admin</label>
+                                <input type="text" id="setting-admin_whatsapp" placeholder="628xxxxxxxxxx"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">URL
+                                    Website</label>
+                                <input type="url" id="setting-website_url" placeholder="https://misicuan.com"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Email
+                                    Dukungan</label>
+                                <input type="email" id="setting-support_email" placeholder="support@misicuan.com"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Link
+                                    Grup Komunitas (Telegram)</label>
+                                <input type="url" id="setting-community_group_link"
+                                    placeholder="https://t.me/GrupSosmed Agency"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-cyan-400 text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition font-semibold">
+                                <p class="text-xs text-slate-600 mt-1">Link ini akan otomatis menempel di menu Bot "💬
+                                    Grup Komunitas".</p>
+                            </div>
+                            <div class="md:col-span-1 border-t border-indigo-500/10 pt-4 mt-2">
+                                <label class="block text-xs font-semibold text-teal-400 uppercase tracking-wide mb-2">ID
+                                    Channel/Grup Broadcast (Target)</label>
+                                <input type="text" id="setting-channel_broadcast_target"
+                                    placeholder="-100123456789 (Awali dengan -100)"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-teal-500/30 text-teal-400 text-sm focus:border-teal-500/70 focus:ring-2 focus:ring-teal-500/30 outline-none transition font-semibold">
+                                <p class="text-xs text-slate-500 mt-1">Gunakan bot lain seperit IDBot atau Rose untuk
+                                    mendapatkan ID Channel/Grup tempat bot akan memposting promo otomatis. Biarkan
+                                    kosong untuk menonaktifkan.</p>
+                            </div>
+                            <div class="md:col-span-1 border-t border-indigo-500/10 pt-4 mt-2">
+                                <label
+                                    class="block text-xs font-semibold text-teal-400 uppercase tracking-wide mb-2">Durasi
+                                    Interval Broadcast (Jam)</label>
+                                <input type="number" id="setting-channel_broadcast_interval_hours" min="1" max="72"
+                                    placeholder="4"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-teal-500/30 text-white text-sm focus:border-teal-500/70 focus:ring-2 focus:ring-teal-500/30 outline-none transition">
+                                <p class="text-xs text-slate-500 mt-1">Berapa jam sekali bot akan memposting pesan
+                                    motivasi & referral ke channel di atas? (Rekomendasi: 3 jam atau 6 jam)</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Deskripsi
+                                    Bisnis</label>
+                                <textarea id="setting-business_desc" rows="3"
+                                    placeholder="Layanan sosial media marketing terpercaya..."
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition resize-none"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. Pembayaran QRIS -->
+                    <div
+                        class="bg-slate-800/50 rounded-2xl border border-indigo-500/10 overflow-hidden backdrop-blur-sm">
+                        <div class="px-6 py-4 border-b border-indigo-500/10 flex items-center gap-3">
+                            <span class="bg-emerald-500/15 text-emerald-400 p-2 rounded-xl text-lg">💳</span>
+                            <div>
+                                <h3 class="font-bold text-white text-sm">Pembayaran QRIS</h3>
+                                <p class="text-xs text-slate-500">Konfigurasi QRIS untuk menerima pembayaran</p>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label
+                                        class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">URL
+                                        Gambar QRIS</label>
+                                    <input type="url" id="setting-qris_url" placeholder="https://link-gambar-qris.jpg"
+                                        class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition"
+                                        oninput="document.getElementById('preview-qris').src = this.value">
+                                    <p class="text-xs text-slate-600 mt-2">Upload gambar QRIS ke Supabase Storage lalu
+                                        paste URL-nya di sini</p>
+                                </div>
+                                <div class="flex flex-col items-center justify-center">
+                                    <div
+                                        class="w-48 h-48 rounded-2xl bg-slate-900/80 border-2 border-dashed border-indigo-500/20 flex items-center justify-center overflow-hidden">
+                                        <img id="preview-qris" src="" alt="QRIS Preview"
+                                            class="w-full h-full object-contain hidden"
+                                            onload="this.classList.remove('hidden'); this.nextElementSibling.classList.add('hidden')"
+                                            onerror="this.classList.add('hidden'); this.nextElementSibling.classList.remove('hidden')">
+                                        <span class="text-slate-600 text-xs text-center px-4">Preview QRIS akan muncul
+                                            di sini</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-5">
+                                <div>
+                                    <label
+                                        class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Nama
+                                        Pemilik Rekening</label>
+                                    <input type="text" id="setting-payment_name" placeholder="PT Sosmed Agency Indonesia"
+                                        class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Instruksi
+                                        Pembayaran</label>
+                                    <input type="text" id="setting-payment_instructions"
+                                        placeholder="Scan QR untuk bayar, lalu kirim bukti transfer"
+                                        class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. Bot Telegram -->
+                    <div
+                        class="bg-slate-800/50 rounded-2xl border border-indigo-500/10 overflow-hidden backdrop-blur-sm">
+                        <div class="px-6 py-4 border-b border-indigo-500/10 flex items-center gap-3">
+                            <span class="bg-cyan-500/15 text-cyan-400 p-2 rounded-xl text-lg">🤖</span>
+                            <div>
+                                <h3 class="font-bold text-white text-sm">Konfigurasi Bot Telegram</h3>
+                                <p class="text-xs text-slate-500">Pengaturan bot pekerja dan notifikasi admin</p>
+                            </div>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Admin
+                                    Chat ID</label>
+                                <input type="text" id="setting-admin_chat_id" placeholder="123456789"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition font-mono">
+                                <p class="text-xs text-slate-600 mt-1">ID chat Telegram untuk menerima notifikasi order
+                                    baru</p>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Min.
+                                    Saldo Penarikan (Rp)</label>
+                                <input type="number" id="setting-min_withdrawal" placeholder="25000"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition font-mono">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Max
+                                    Misi per User / Hari</label>
+                                <input type="number" id="setting-max_daily_missions" placeholder="10"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition font-mono">
+                            </div>
+                            <div class="md:col-span-2">
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Pesan
+                                    Selamat Datang Bot</label>
+                                <textarea id="setting-welcome_message" rows="3"
+                                    placeholder="Selamat datang di Sosmed Agency Bot! 🚀 Kerjakan misi, dapatkan cuan!"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition resize-none"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. AI & Komentar -->
+                    <div
+                        class="bg-slate-800/50 rounded-2xl border border-indigo-500/10 overflow-hidden backdrop-blur-sm">
+                        <div class="px-6 py-4 border-b border-indigo-500/10 flex items-center gap-3">
+                            <span class="bg-purple-500/15 text-purple-400 p-2 rounded-xl text-lg">✨</span>
+                            <div>
+                                <h3 class="font-bold text-white text-sm">AI & Generasi Komentar</h3>
+                                <p class="text-xs text-slate-500">Pengaturan Gemini AI untuk generate komentar otomatis
+                                </p>
+                            </div>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Default
+                                    Tone Komentar</label>
+                                <select id="setting-ai_default_tone"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition">
+                                    <option value="Sopan">Sopan</option>
+                                    <option value="Casual">Casual / Santai</option>
+                                    <option value="Antusias">Antusias / Excited</option>
+                                    <option value="Profesional">Profesional</option>
+                                    <option value="Friendly">Friendly / Ramah</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Jumlah
+                                    Komentar Default</label>
+                                <input type="number" id="setting-ai_default_quantity" placeholder="10"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition font-mono">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Retry
+                                    Interval AI (detik)</label>
+                                <input type="number" id="setting-ai_retry_interval" placeholder="300"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition font-mono">
+                                <p class="text-xs text-slate-600 mt-1">Interval retry saat generate gagal (default: 300
+                                    = 5 menit)</p>
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Expire
+                                    Komentar (hari)</label>
+                                <input type="number" id="setting-comment_expire_days" placeholder="30"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition font-mono">
+                                <p class="text-xs text-slate-600 mt-1">Komentar AI akan otomatis dihapus setelah X hari
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4.5. Program Referral -->
+                    <div
+                        class="bg-slate-800/50 rounded-2xl border border-indigo-500/10 overflow-hidden backdrop-blur-sm">
+                        <div class="px-6 py-4 border-b border-indigo-500/10 flex items-center gap-3">
+                            <span class="bg-green-500/15 text-green-400 p-2 rounded-xl text-lg">🤝</span>
+                            <div>
+                                <h3 class="font-bold text-white text-sm">Program Referral (Afiliasi)</h3>
+                                <p class="text-xs text-slate-500">Insentif saldo bagi Pasukan yang mengajak teman</p>
+                            </div>
+                        </div>
+                        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
+                            <div>
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Bonus
+                                    Saldo Pengundang (Rp)</label>
+                                <input type="number" id="setting-referral_bonus_amount" placeholder="5000"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition font-mono">
+                                <p class="text-xs text-slate-600 mt-1">Saldo yang otomatis diberikan ke pengundang saat
+                                    pendaftar baru masuk via link.</p>
+                            </div>
+                            <div class="md:col-span-2">
+                                <label
+                                    class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Pesan
+                                    Template Referral</label>
+                                <textarea id="setting-referral_template" rows="4"
+                                    placeholder="Yuk gabung Sosmed Agency! Kerjakan misi simpel, dibayar instan... Gunakan link di bawah ini:\n{LINK_REFERRAL}"
+                                    class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition resize-none"></textarea>
+                                <p class="text-xs text-slate-600 mt-1">Teks _default_ yang akan dibagikan ke medsos
+                                    pasukan. Parameter otomatis: <code>{LINK_REFERRAL}</code></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 5. Platform & Fitur -->
+                    <div
+                        class="bg-slate-800/50 rounded-2xl border border-indigo-500/10 overflow-hidden backdrop-blur-sm">
+                        <div class="px-6 py-4 border-b border-indigo-500/10 flex items-center gap-3">
+                            <span class="bg-amber-500/15 text-amber-400 p-2 rounded-xl text-lg">⚙️</span>
+                            <div>
+                                <h3 class="font-bold text-white text-sm">Platform & Fitur</h3>
+                                <p class="text-xs text-slate-500">Aktifkan/nonaktifkan platform dan fitur tertentu</p>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <label
+                                    class="flex items-center gap-3 bg-slate-900/40 px-4 py-3 rounded-xl border border-indigo-500/10 cursor-pointer hover:border-indigo-500/25 transition">
+                                    <input type="checkbox" id="setting-platform_instagram" checked
+                                        class="w-4 h-4 accent-cyan-400 rounded">
+                                    <span class="text-sm text-slate-300">📸 Instagram</span>
+                                </label>
+                                <label
+                                    class="flex items-center gap-3 bg-slate-900/40 px-4 py-3 rounded-xl border border-indigo-500/10 cursor-pointer hover:border-indigo-500/25 transition">
+                                    <input type="checkbox" id="setting-platform_tiktok" checked
+                                        class="w-4 h-4 accent-cyan-400 rounded">
+                                    <span class="text-sm text-slate-300">🎵 TikTok</span>
+                                </label>
+                                <label
+                                    class="flex items-center gap-3 bg-slate-900/40 px-4 py-3 rounded-xl border border-indigo-500/10 cursor-pointer hover:border-indigo-500/25 transition">
+                                    <input type="checkbox" id="setting-platform_youtube" checked
+                                        class="w-4 h-4 accent-cyan-400 rounded">
+                                    <span class="text-sm text-slate-300">▶️ YouTube</span>
+                                </label>
+                                <label
+                                    class="flex items-center gap-3 bg-slate-900/40 px-4 py-3 rounded-xl border border-indigo-500/10 cursor-pointer hover:border-indigo-500/25 transition">
+                                    <input type="checkbox" id="setting-platform_facebook" checked
+                                        class="w-4 h-4 accent-cyan-400 rounded">
+                                    <span class="text-sm text-slate-300">📘 Facebook</span>
+                                </label>
+                                <label
+                                    class="flex items-center gap-3 bg-slate-900/40 px-4 py-3 rounded-xl border border-indigo-500/10 cursor-pointer hover:border-indigo-500/25 transition">
+                                    <input type="checkbox" id="setting-platform_shopee" checked
+                                        class="w-4 h-4 accent-cyan-400 rounded">
+                                    <span class="text-sm text-slate-300">🛒 Shopee</span>
+                                </label>
+                                <label
+                                    class="flex items-center gap-3 bg-slate-900/40 px-4 py-3 rounded-xl border border-indigo-500/10 cursor-pointer hover:border-indigo-500/25 transition">
+                                    <input type="checkbox" id="setting-platform_gmaps" checked
+                                        class="w-4 h-4 accent-cyan-400 rounded">
+                                    <span class="text-sm text-slate-300">📍 Google Maps</span>
+                                </label>
+                            </div>
+                            <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <label
+                                    class="flex items-center gap-3 bg-slate-900/40 px-4 py-3 rounded-xl border border-indigo-500/10 cursor-pointer hover:border-indigo-500/25 transition">
+                                    <input type="checkbox" id="setting-feature_ai_comments" checked
+                                        class="w-4 h-4 accent-emerald-400 rounded">
+                                    <div>
+                                        <span class="text-sm text-slate-300">🤖 AI Comment Generator</span>
+                                        <p class="text-xs text-slate-600">Aktifkan generasi komentar otomatis via Gemini
+                                        </p>
+                                    </div>
+                                </label>
+                                <label
+                                    class="flex items-center gap-3 bg-slate-900/40 px-4 py-3 rounded-xl border border-indigo-500/10 cursor-pointer hover:border-indigo-500/25 transition">
+                                    <input type="checkbox" id="setting-feature_ai_verification" checked
+                                        class="w-4 h-4 accent-emerald-400 rounded">
+                                    <div>
+                                        <span class="text-sm text-slate-300">🔍 AI Proof Verification</span>
+                                        <p class="text-xs text-slate-600">Verifikasi bukti screenshot otomatis via AI
+                                        </p>
+                                    </div>
+                                </label>
+                                <label
+                                    class="flex items-center gap-3 bg-slate-900/40 px-4 py-3 rounded-xl border border-indigo-500/10 cursor-pointer hover:border-indigo-500/25 transition">
+                                    <input type="checkbox" id="setting-maintenance_mode"
+                                        class="w-4 h-4 accent-red-400 rounded">
+                                    <div>
+                                        <span class="text-sm text-red-400 font-bold">🚧 Mode Maintenance</span>
+                                        <p class="text-xs text-slate-600">Landing page menampilkan pesan sedang
+                                            maintenance</p>
+                                    </div>
+                                </label>
+                                <label
+                                    class="flex items-center gap-3 bg-slate-900/40 px-4 py-3 rounded-xl border border-indigo-500/10 cursor-pointer hover:border-indigo-500/25 transition">
+                                    <input type="checkbox" id="setting-feature_order_notif" checked
+                                        class="w-4 h-4 accent-emerald-400 rounded">
+                                    <div>
+                                        <span class="text-sm text-slate-300">🔔 Notifikasi Order Baru</span>
+                                        <p class="text-xs text-slate-600">Kirim notifikasi ke Telegram saat ada order
+                                            masuk</p>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 6. Data & Maintenance -->
+                    <div
+                        class="bg-slate-800/50 rounded-2xl border border-indigo-500/10 overflow-hidden backdrop-blur-sm">
+                        <div class="px-6 py-4 border-b border-indigo-500/10 flex items-center gap-3">
+                            <span class="bg-red-500/15 text-red-400 p-2 rounded-xl text-lg">🛠️</span>
+                            <div>
+                                <h3 class="font-bold text-white text-sm">Data & Maintenance</h3>
+                                <p class="text-xs text-slate-500">Pengelolaan data dan aksi-aksi pemeliharaan</p>
+                            </div>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-5">
+                                <div>
+                                    <label
+                                        class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Cache
+                                        TTL Landing Page (menit)</label>
+                                    <input type="number" id="setting-cache_ttl_minutes" placeholder="5"
+                                        class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition font-mono">
+                                    <p class="text-xs text-slate-600 mt-1">Berapa lama paket di-cache di browser
+                                        pengunjung (default: 5 menit)</p>
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs font-semibold text-slate-400 uppercase tracking-wide mb-2">Auto-Delete
+                                        Misi Selesai (hari)</label>
+                                    <input type="number" id="setting-auto_delete_days" placeholder="90"
+                                        class="w-full px-4 py-3 rounded-xl bg-slate-900/60 border border-indigo-500/15 text-white text-sm focus:border-indigo-500/50 focus:ring-2 focus:ring-indigo-500/20 outline-none transition font-mono">
+                                    <p class="text-xs text-slate-600 mt-1">Misi yang sudah selesai akan dihapus setelah
+                                        X hari</p>
+                                </div>
+                            </div>
+                            <div class="border-t border-indigo-500/10 pt-5">
+                                <h4 class="text-xs font-bold text-red-400 uppercase tracking-wide mb-4">⚠️ Danger Zone
+                                </h4>
+                                <div class="flex flex-wrap gap-3">
+                                    <button onclick="window.exportAllSettings()"
+                                        class="bg-indigo-500/10 border border-indigo-500/20 text-cyan-400 hover:bg-indigo-500/20 px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2">
+                                        📤 Export Settings (JSON)
+                                    </button>
+                                    <button onclick="window.clearOldMissions()"
+                                        class="bg-amber-500/10 border border-amber-500/20 text-amber-400 hover:bg-amber-500/20 px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2">
+                                        🗑️ Hapus Misi Selesai (>90 hari)
+                                    </button>
+                                    <button onclick="window.clearExpiredComments()"
+                                        class="bg-red-500/10 border border-red-500/20 text-red-400 hover:bg-red-500/20 px-4 py-2.5 rounded-xl text-xs font-bold transition flex items-center gap-2">
+                                        🧹 Hapus Komentar Expired
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+            <!-- Packages Manager -->
+            <section id="section-packages" class="admin-section hidden">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800">Manage Packages</h2>
+                    <div class="flex items-center gap-3">
+                        <button id="btnGlobalPricing" onclick="window.openGlobalPricingModal()"
+                            class="bg-purple-100 hover:bg-purple-200 text-purple-700 px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1 transition relative z-10 cursor-pointer">
+                            💸 Global Pricing
+                        </button>
+                        <button onclick="exportPackagesToCSV()"
+                            class="bg-green-100 hover:bg-green-200 text-green-700 px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1 transition">
+                            📄 Export CSV
+                        </button>
+                        <button onclick="document.getElementById('importCsvInput').click()"
+                            class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1 transition">
+                            📥 Import CSV
+                        </button>
+                        <input type="file" id="importCsvInput" accept=".csv" class="hidden"
+                            onchange="importPackagesFromCSV(this)">
+                        <button onclick="fetchPackages()"
+                            class="text-sm text-gray-500 hover:text-gray-800 font-medium ml-2">Refresh</button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="bg-gray-50 text-xs uppercase tracking-wider text-gray-500 border-b border-gray-100">
+                                    <th class="p-4 font-semibold">Platform</th>
+                                    <th class="p-4 font-semibold">Package Name</th>
+                                    <th class="p-4 font-semibold">Price</th>
+                                    <th class="p-4 font-semibold">Included Actions</th>
+                                    <th class="p-4 font-semibold text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="packagesTable" class="text-sm divide-y divide-gray-100">
+                                <tr>
+                                    <td colspan="5" class="p-4 text-center text-gray-400">Loading packages...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Create Mission -->
+            <section id="section-missions" class="admin-section hidden">
+                <div class="max-w-4xl mx-auto">
+                    <h2 class="text-2xl font-bold mb-6 text-gray-800 flex items-center gap-2">
+                        <span class="bg-blue-100 p-2 rounded-lg text-blue-600">🚀</span>
+                        Create New Mission
+                    </h2>
+
+                    <div class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                        <!-- Form Header -->
+                        <div class="px-8 py-6 bg-gradient-to-r from-blue-600 to-indigo-600">
+                            <h3 class="text-white font-bold text-lg">Mission Details</h3>
+                            <p class="text-blue-100 text-sm mt-1">Fill in the details below to publish a new earning
+                                opportunity.</p>
+                        </div>
+
+                        <form id="missionForm" class="p-8 grid grid-cols-1 md:grid-cols-12 gap-6">
+                            <input type="hidden" id="mOrderId">
+                            <input type="hidden" id="mPackageFeatures">
+
+                            <!-- Based on Package Selection -->
+                            <div class="col-span-1 md:col-span-12">
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Based
+                                    on Package (Auto-fill)</label>
+                                <div class="relative">
+                                    <select id="mPackageSelect" onchange="applyPackageTemplate(this.value)"
+                                        class="w-full h-10 px-4 py-2 rounded-xl bg-blue-50 border border-blue-200 focus:bg-white focus:border-blue-500 outline-none transition font-medium text-blue-700 appearance-none cursor-pointer">
+                                        <option value="">-- Manual Creation --</option>
+                                        <!-- Populated by JS -->
+                                    </select>
+                                    <div
+                                        class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-blue-500">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Package Summary (For Bundles) -->
+                            <div id="mPackageSummary" class="col-span-1 md:col-span-12 hidden animate-fade-in">
+                                <div class="bg-blue-50 border border-blue-100 rounded-xl p-4">
+                                    <h4 class="text-xs font-bold text-blue-800 uppercase mb-2 flex items-center gap-2">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                            </path>
+                                        </svg>
+                                        Paket Ini Akan Membuat <span id="mSummaryCount"
+                                            class="bg-blue-600 text-white px-1.5 rounded-full text-[10px]">0</span>
+                                        Misi:
+                                    </h4>
+                                    <ul id="mSummaryList" class="space-y-2 text-sm text-gray-700">
+                                        <!-- Populated via JS -->
+                                    </ul>
+                                    <div
+                                        class="mt-3 pt-3 border-t border-blue-200 flex justify-between items-center text-xs font-bold text-gray-500">
+                                        <span>Total Cost Estimasi:</span>
+                                        <span id="mSummaryCost" class="text-blue-700 text-sm">Rp 0</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Title -->
+                            <div class="col-span-1 md:col-span-12">
+                                <label
+                                    class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Mission
+                                    Title</label>
+                                <div class="relative">
+                                    <span
+                                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                                            </path>
+                                        </svg>
+                                    </span>
+                                    <input type="text" id="mTitle" placeholder="Ex: Like & Follow Instagram Sosmed Agency"
+                                        class="w-full pl-10 h-10 px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition font-medium text-gray-700"
+                                        required>
+                                </div>
+                            </div>
+
+                            <!-- Platform & Category Group -->
+                            <div class="col-span-1 md:col-span-6">
+                                <label
+                                    class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Platform
+                                    / Category</label>
+                                <div class="relative">
+                                    <span
+                                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10">
+                                            </path>
+                                        </svg>
+                                    </span>
+                                    <select id="mCategory"
+                                        class="w-full pl-10 px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition font-medium text-gray-700 appearance-none cursor-pointer"
+                                        required>
+                                        <option value="UMKM">UMKM (General)</option>
+                                        <option value="TikTok">TikTok</option>
+                                        <option value="YouTube">YouTube</option>
+                                        <option value="Instagram">Instagram</option>
+                                        <option value="Facebook">Facebook</option>
+                                        <option value="Google Maps">Google Maps</option>
+                                        <option value="Shopee">Shopee</option>
+                                    </select>
+                                    <div
+                                        class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-span-1 md:col-span-6">
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Action
+                                    Required</label>
+                                <div class="relative">
+                                    <span
+                                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </span>
+                                    <select id="mPlatform" onchange="toggleCommentLogic(this.value)"
+                                        class="w-full pl-10 px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition font-medium text-gray-700 appearance-none cursor-pointer"
+                                        required>
+                                        <option value="Review">Review</option>
+                                        <option value="Like">Like</option>
+                                        <option value="Follow">Follow</option>
+                                        <option value="Comment">Comment</option>
+                                        <option value="Subscribe">Subscribe</option>
+                                        <option value="Share">Share</option>
+                                    </select>
+                                    <div
+                                        class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M19 9l-7 7-7-7"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Gemini AI Integration Logic (Dynamic) -->
+                            <div id="mCommentLogic"
+                                class="col-span-1 md:col-span-12 hidden space-y-4 bg-purple-50 p-6 rounded-2xl border border-purple-100">
+                                <div class="flex items-center gap-2 mb-2">
+                                    <span class="bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded">AI
+                                        POWERED</span>
+                                    <h4 class="text-sm font-bold text-purple-900">Automation & AI Comments</h4>
+                                </div>
+
+                                <!-- GMaps Specific Logic (Hidden by Default) -->
+                                <!-- GMaps Specific Fields REMOVED - Relying on Context Reference -->
+
+                                <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
+                                    <div class="col-span-1 md:col-span-8">
+                                        <label
+                                            class="block text-[10px] font-bold text-purple-700 uppercase mb-1">Context
+                                            Reference (Video Caption/URL)</label>
+                                        <textarea id="mContext" rows="2"
+                                            placeholder="Ex: Produk kecantikan terbaru, bahas tentang tekstur dan harga..."
+                                            class="w-full px-4 py-2 text-sm rounded-xl border border-purple-200 focus:border-purple-500 outline-none transition"></textarea>
+                                    </div>
+                                    <div class="col-span-1 md:col-span-4">
+                                        <label
+                                            class="block text-[10px] font-bold text-purple-700 uppercase mb-1">Comment
+                                            Tone</label>
+                                        <div class="flex gap-2">
+                                            <select id="mTone"
+                                                class="flex-1 px-4 py-2 h-10 text-sm rounded-xl border border-purple-200 outline-none focus:border-purple-500 transition">
+                                                <option value="Gaul">Gaul (Chill)</option>
+                                                <option value="Formal">Formal</option>
+                                                <option value="Sopan">Sopan</option>
+                                            </select>
+                                            <button type="button" onclick="previewAiComments()" id="btnAiPreview"
+                                                class="bg-purple-600 hover:bg-purple-700 text-white px-3 rounded-xl transition shadow-md shadow-purple-500/20 flex items-center justify-center">
+                                                <span>Preview</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- AI Preview Result area -->
+                                <div id="mAiPreviewResult" class="hidden animate-fade-in">
+                                    <p class="text-[10px] text-purple-400 font-bold mb-2 uppercase">AI Preview Hasil
+                                        Komentar:</p>
+                                    <div id="mAiPreviewList" class="space-y-2">
+                                        <!-- Populated via JS -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Metrics Group -->
+                            <!-- Metrics Group (Hide when Package Selected) -->
+                            <div id="manual-metrics-section"
+                                class="col-span-1 md:col-span-12 grid grid-cols-1 md:grid-cols-2 gap-6 transition-all duration-300">
+                                <div class="col-span-1 md:col-span-1">
+                                    <label
+                                        class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Reward
+                                        Amount (Rp)</label>
+                                    <div class="relative">
+                                        <span
+                                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-green-500 font-bold">Rp</span>
+                                        <input type="number" id="mReward" placeholder="500"
+                                            class="w-full pl-10 px-4 py-3 rounded-xl bg-green-50/50 border border-green-200 focus:bg-white focus:border-green-500 focus:ring-2 focus:ring-green-500/20 outline-none transition font-bold text-green-700"
+                                            required>
+                                    </div>
+                                </div>
+
+                                <div class="col-span-1 md:col-span-1">
+                                    <label
+                                        class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Quota
+                                        (Slots)</label>
+                                    <div class="relative">
+                                        <span
+                                            class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 4 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z">
+                                                </path>
+                                            </svg>
+                                        </span>
+                                        <input type="number" id="mQuota" placeholder="100"
+                                            class="w-full pl-10 px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition font-bold text-gray-700"
+                                            required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Target Link -->
+                            <div class="col-span-1 md:col-span-12">
+                                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Target
+                                    URL</label>
+                                <div class="relative">
+                                    <span
+                                        class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1">
+                                            </path>
+                                        </svg>
+                                    </span>
+                                    <input type="url" id="mLink" placeholder="https://..."
+                                        class="w-full pl-10 px-4 py-3 rounded-xl bg-gray-50 border border-gray-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition font-medium text-blue-600"
+                                        required>
+                                </div>
+                                <p class="text-xs text-gray-400 mt-2 ml-1">Make sure the link is publicly accessible.
+                                </p>
+                            </div>
+
+                            <!-- Submit Action -->
+                            <div class="col-span-1 md:col-span-12 pt-4 border-t border-gray-100 flex justify-end">
+                                <button type="submit"
+                                    class="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3.5 px-8 rounded-xl transition-all shadow-lg shadow-blue-500/30 transform hover:-translate-y-1 flex items-center gap-2">
+                                    🚀 Publish Mission
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Submissions Queue -->
+            <section id="section-queue" class="admin-section hidden">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">Submission Queue</h2>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr
+                                class="bg-gray-50 text-xs uppercase tracking-wider text-gray-500 border-b border-gray-100">
+                                <th class="p-4 font-semibold">Mission</th>
+                                <th class="p-4 font-semibold">User Data</th>
+                                <th class="p-4 font-semibold">Proof</th>
+                                <th class="p-4 font-semibold text-right">Verification</th>
+                            </tr>
+                        </thead>
+                        <tbody id="submissionTable" class="text-sm divide-y divide-gray-100">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Data Pasukan -->
+            <section id="section-users" class="admin-section hidden">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">Daftar Pasukan (Workers)</h2>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="bg-gray-50 text-xs uppercase tracking-wider text-gray-500 border-b border-gray-100">
+                                    <th class="p-4 font-semibold">Profil Telegram</th>
+                                    <th class="p-4 font-semibold">User ID</th>
+                                    <th class="p-4 font-semibold">Saldo/Penghasilan</th>
+                                    <th class="p-4 font-semibold">Nomor DANA/Contact</th>
+                                    <th class="p-4 font-semibold">Bergabung Pada</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersTableBody" class="text-sm divide-y divide-gray-100">
+                                <!-- Users get injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Data Pemesan Layanan -->
+            <section id="section-clients" class="admin-section hidden">
+                <h2 class="text-2xl font-bold mb-6 text-gray-800">Daftar Pemesan Layanan (Clients)</h2>
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr
+                                    class="bg-gray-50 text-xs uppercase tracking-wider text-gray-500 border-b border-gray-100">
+                                    <th class="p-4 font-semibold">Nama Pemesan</th>
+                                    <th class="p-4 font-semibold">WhatsApp (WA)</th>
+                                    <th class="p-4 font-semibold w-48">Layanan Dipesan</th>
+                                    <th class="p-2 font-semibold text-center border-l bg-blue-50/30 text-[10px] w-20">
+                                        GMaps</th>
+                                    <th class="p-2 font-semibold text-center bg-gray-50/50 text-[10px] w-20">TikTok</th>
+                                    <th class="p-2 font-semibold text-center bg-blue-50/30 text-[10px] w-20">Facebook
+                                    </th>
+                                    <th class="p-2 font-semibold text-center bg-gray-50/50 text-[10px] w-20">Instagram
+                                    </th>
+                                    <th class="p-2 font-semibold text-center bg-blue-50/30 text-[10px] w-20">YouTube
+                                    </th>
+                                    <th class="p-2 font-semibold text-center bg-gray-50/50 text-[10px] w-20">Shopee</th>
+                                    <th class="p-2 font-semibold text-center bg-blue-50/30 text-[10px] w-20">TT Shop
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="clientsTableBody" class="text-sm divide-y divide-gray-100">
+                                <!-- Clients get injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.admin-section').forEach(el => el.classList.add('hidden'));
+
+            // Show target
+            document.getElementById('section-' + sectionId).classList.remove('hidden');
+
+            // Update Nav State
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('bg-blue-50', 'text-blue-600');
+                el.classList.add('text-gray-600');
+
+                // Reset Icon color
+                const icon = el.querySelector('svg');
+                if (icon) icon.classList.remove('text-blue-500');
+            });
+
+            // Activate current nav
+            const activeNav = document.getElementById('nav-' + sectionId);
+            if (activeNav) {
+                activeNav.classList.remove('text-gray-600');
+                activeNav.classList.add('bg-blue-50', 'text-blue-600');
+                const icon = activeNav.querySelector('svg');
+                if (icon) icon.classList.add('text-blue-500');
+            }
+        }
+
+        // Modal Logic
+        function closeModal() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+        window.closeModal = closeModal; // Expose to window for onclick
+
+        // Default Load
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('orders');
+        });
+
+        // Smart Refresh
+        const originalShowSection = window.showSection || showSection;
+        window.showSection = (sectionId) => {
+            // Call original UI logic
+            document.querySelectorAll('.admin-section').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById('section-' + sectionId);
+            if (target) target.classList.remove('hidden');
+
+            document.querySelectorAll('.nav-item').forEach(el => {
+                el.classList.remove('bg-blue-50', 'text-blue-600');
+                el.classList.add('text-gray-600');
+                const icon = el.querySelector('svg');
+                if (icon) icon.classList.remove('text-blue-500');
+            });
+
+            const activeNav = document.getElementById('nav-' + sectionId);
+            if (activeNav) {
+                activeNav.classList.remove('text-gray-600');
+                activeNav.classList.add('bg-blue-50', 'text-blue-600');
+                const icon = activeNav.querySelector('svg');
+                if (icon) icon.classList.add('text-blue-500');
+            }
+
+            // Trigger Data Fetch
+            if (sectionId === 'active-missions' && window.fetchActiveMissions) window.fetchActiveMissions();
+            if (sectionId === 'orders' && window.fetchOrders) window.fetchOrders();
+            if (sectionId === 'queue' && window.fetchSubmissions) window.fetchSubmissions();
+            if (sectionId === 'packages' && window.fetchPackages) window.fetchPackages();
+        };
+    </script>
+    <!-- Scripts Moved to Bottom -->
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center p-4 z-50">
+        <div class="relative max-w-4xl max-h-screen">
+            <button onclick="closeModal()" class="absolute -top-10 right-0 text-white hover:text-red-500">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+            <img id="modalImg" src="" class="max-w-full max-h-[80vh] rounded shadow-2xl">
+        </div>
+    </div>
+
+    <!-- AI Generator Modal -->
+    <div id="aiModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 transform transition-all scale-100">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                ✨ Generate AI Comments
+            </h3>
+            <p class="text-sm text-gray-500 mb-4">Buat komentar otomatis untuk misi ini.</p>
+
+            <input type="hidden" id="aiMissionId">
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Context / Caption</label>
+                    <textarea id="aiContext" rows="3" placeholder="Paste caption video atau deskripsi produk di sini..."
+                        class="input-field"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tone</label>
+                    <select id="aiTone" class="input-field">
+                        <option value="Gaul">😎 Gaul (Goks, Racun, Auto CO)</option>
+                        <option value="Formal">👔 Formal (Terima kasih, Bermanfaat)</option>
+                        <option value="Sopan">🙏 Sopan (Apresiasi, Santun)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Quantity</label>
+                    <input type="number" id="aiQuantity" value="5" min="1" max="20" class="input-field">
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3">
+                <button onclick="closeAiModal()"
+                    class="text-gray-500 hover:text-gray-700 font-medium text-sm">Cancel</button>
+                <button onclick="submitAiRequest()" id="btnGenerateAi"
+                    class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-bold shadow-lg shadow-purple-500/30 transition flex items-center gap-2">
+                    <span>⚡ Generate</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Image Modal -->
+    <div id="imageModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center p-4 z-50">
+        <div class="relative max-w-4xl max-h-screen">
+            <button onclick="closeModal()" class="absolute -top-10 right-0 text-white hover:text-red-500">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+            <img id="modalImg" src="" class="max-w-full max-h-[80vh] rounded shadow-2xl">
+        </div>
+    </div>
+
+    <!-- AI Generator Modal -->
+    <div id="aiModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 transform transition-all scale-100">
+            <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                ✨ Generate AI Comments
+            </h3>
+            <p class="text-sm text-gray-500 mb-4">Buat komentar otomatis untuk misi ini.</p>
+
+            <input type="hidden" id="aiMissionId">
+
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Context / Caption</label>
+                    <textarea id="aiContext" rows="3" placeholder="Paste caption video atau deskripsi produk di sini..."
+                        class="input-field"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Tone</label>
+                    <select id="aiTone" class="input-field">
+                        <option value="Gaul">😎 Gaul (Goks, Racun, Auto CO)</option>
+                        <option value="Formal">👔 Formal (Terima kasih, Bermanfaat)</option>
+                        <option value="Sopan">🙏 Sopan (Apresiasi, Santun)</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold text-gray-700 mb-1">Quantity</label>
+                    <input type="number" id="aiQuantity" value="5" min="1" max="20" class="input-field">
+                </div>
+            </div>
+
+            <div class="mt-6 flex justify-end gap-3">
+                <button onclick="closeAiModal()"
+                    class="text-gray-500 hover:text-gray-700 font-medium text-sm">Cancel</button>
+                <button onclick="submitAiRequest()" id="btnGenerateAi"
+                    class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg font-bold shadow-lg shadow-purple-500/30 transition flex items-center gap-2">
+                    <span>⚡ Generate</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Package Modal -->
+    <div id="packageModal"
+        class="fixed inset-0 bg-black/60 hidden flex items-center justify-center p-4 z-[9999] backdrop-blur-sm transition-opacity duration-300">
+        <div
+            class="bg-white rounded-2xl shadow-xl max-w-2xl w-full transform transition-all scale-100 overflow-hidden flex flex-col max-h-[90vh]">
+            <!-- Header -->
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                    <span class="bg-blue-100 p-2 rounded-lg text-blue-600">📦</span>
+                    Edit Package
+                </h3>
+                <button onclick="closePackageModal()"
+                    class="text-gray-400 hover:text-red-500 transition-colors rounded-lg p-1 hover:bg-gray-100">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Scrollable Body -->
+            <div class="p-6 space-y-6 overflow-y-auto flex-1 min-h-0">
+                <input type="hidden" id="editPkgId">
+
+                <!-- Name & Price Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Package
+                            Name</label>
+                        <input type="text" id="editPkgName"
+                            class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none font-medium text-sm"
+                            placeholder="E.g., TikTok Viral">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Price
+                            (IDR)</label>
+                        <div class="relative">
+                            <span class="absolute left-4 top-3.5 text-gray-400 font-bold text-sm">Rp</span>
+                            <input type="number" id="editPkgPrice"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-3 text-gray-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none font-bold text-sm"
+                                placeholder="0">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profit Analysis Panel -->
+                <div id="profit-analysis"
+                    class="bg-gray-50 rounded-xl p-4 border border-gray-200 hidden animate-fade-in">
+                    <div class="flex justify-between items-center mb-2">
+                        <h4 class="text-xs font-bold text-gray-500 uppercase tracking-wide">💰 Profit Analysis</h4>
+                        <span id="analysis-badge"
+                            class="px-2 py-1 rounded text-[10px] font-bold uppercase bg-gray-200 text-gray-600">Pending</span>
+                    </div>
+                    <div class="space-y-1 text-sm">
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Selling Price:</span>
+                            <span class="font-bold text-gray-800" id="analysis-price">Rp 0</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-gray-600">Est. Reward Cost:</span>
+                            <span class="font-bold text-red-600" id="analysis-cost">Rp 0</span>
+                        </div>
+                        <div class="border-t border-gray-200 my-2 pt-2 flex justify-between items-center">
+                            <span class="font-bold text-gray-800">Margin:</span>
+                            <span class="font-bold text-xl" id="analysis-margin">Rp 0</span>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-gray-400 mt-2 italic">*Based on standard action rewards (Follow: Rp400,
+                        Like: Rp150, etc)</p>
+                </div>
+
+                <!-- Category Row -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div>
+                        <label
+                            class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Category</label>
+                        <div class="relative">
+                            <select id="editPkgCategory"
+                                class="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none appearance-none font-medium text-sm">
+                                <option value="Instagram">Instagram</option>
+                                <option value="TikTok">TikTok</option>
+                                <option value="YouTube">YouTube</option>
+                                <option value="Facebook">Facebook</option>
+                                <option value="Shopee">Shopee</option>
+                                <option value="TikTok Shop">TikTok Shop</option>
+                                <option value="Google Maps">Google Maps</option>
+                                <option value="UMKM">UMKM</option>
+                                <option value="SOSMED">SOSMED</option>
+                                <option value="E-Commerce">E-Commerce</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <div
+                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Sub Category
+                            (Sosmed / E-Commerce)</label>
+                        <div class="relative">
+                            <select id="editPkgSubCategory"
+                                class="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-gray-800 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all outline-none appearance-none font-medium text-sm">
+                                <option value="">- None -</option>
+                                <option value="TikTok">TikTok</option>
+                                <option value="YouTube">YouTube</option>
+                                <option value="Instagram">Instagram</option>
+                                <option value="Facebook">Facebook</option>
+                                <option value="Shopee">Shopee</option>
+                                <option value="TikTok Shop">TikTok Shop</option>
+                            </select>
+                            <div
+                                class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M19 9l-7 7-7-7"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Flags Checkboxes -->
+                <div class="flex gap-6 py-2">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="editPkgBestValue"
+                            class="w-5 h-5 text-blue-600 rounded focus:ring-blue-500 border-gray-300">
+                        <span class="text-sm font-bold text-gray-700">🏆 Best Value Badge</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="editPkgDecoy"
+                            class="w-5 h-5 text-red-600 rounded focus:ring-red-500 border-gray-300">
+                        <span class="text-sm font-bold text-gray-700">👻 Decoy (Hidden/Fake)</span>
+                    </label>
+                </div>
+
+                <!-- Features -->
+                <div>
+
+
+                    <div class="mb-4">
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-2">Default Quota
+                            (Target/Jumlah)</label>
+                        <div class="relative">
+                            <span
+                                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-blue-500 font-bold">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z">
+                                    </path>
+                                </svg>
+                            </span>
+                            <input type="number" id="editPkgQuota" placeholder="100"
+                                class="w-full pl-10 px-4 py-3 rounded-xl bg-blue-50/50 border border-blue-200 focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 outline-none transition font-bold text-blue-700">
+                        </div>
+                        <p class="text-[10px] text-gray-400 mt-1 ml-1">Jumlah target aksi (Followers/Likes/dll) untuk
+                            paket ini.</p>
+                    </div>
+
+                    <!-- Features Section (Correctly placed outside 'Reward' section) -->
+                    <div>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-xs font-bold text-gray-500 uppercase tracking-wide">Features
+                                List</label>
+                            <button type="button" onclick="addFeatureRow()"
+                                class="text-[10px] bg-blue-50 text-blue-600 px-2 py-1 rounded hover:bg-blue-100 font-bold uppercase transition">
+                                + Add Row
+                            </button>
+                        </div>
+
+                        <!-- Structured Builder Container -->
+                        <div id="features-builder" class="space-y-2 mb-2 max-h-40 overflow-y-auto pr-1">
+                            <!-- Rows will be injected here via JS -->
+                        </div>
+
+                        <!-- Hidden Template for Raw Output (compatibility) -->
+                        <textarea id="editPkgFeatures" class="hidden"></textarea>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="px-6 py-4 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+                    <button onclick="closePackageModal()"
+                        class="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-500 hover:text-gray-800 hover:bg-gray-200 transition-all">
+                        Cancel
+                    </button>
+                    <button onclick="savePackage()"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all transform hover:-translate-y-0.5 flex items-center gap-2">
+                        <span>Save Changes</span>
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7">
+                            </path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <script type="module" src="mission-logic.js"></script>
+        <script type="module" src="admin.js?v=7"></script>
+        <!-- Verification Modal -->
+        <div id="verificationModal"
+            class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50 backdrop-blur-sm animate-fade-in">
+            <div
+                class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden transform transition-all scale-100 p-0">
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-blue-600 to-blue-500 p-6 text-white flex justify-between items-start">
+                    <div>
+                        <h3 class="text-xl font-bold">Verify Order & Create Missions</h3>
+                        <p class="text-blue-100 text-sm mt-1">Review the package details and auto-generated missions.
+                        </p>
+                    </div>
+                    <button onclick="closeVerificationModal()"
+                        class="text-white/70 hover:text-white text-2xl font-bold">&times;</button>
+                </div>
+
+                <!-- Body -->
+                <div class="p-6 space-y-6">
+                    <!-- Order Summary -->
+                    <div class="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="block text-gray-400 text-xs uppercase font-bold">Client</span>
+                                <span class="font-bold text-gray-800" id="verifyClientName">-</span>
+                            </div>
+                            <div>
+                                <span class="block text-gray-400 text-xs uppercase font-bold">Package</span>
+                                <span class="font-bold text-gray-800" id="verifyPackageName">-</span>
+                            </div>
+                            <div class="col-span-2">
+                                <span class="block text-gray-400 text-xs uppercase font-bold">Target Link</span>
+                                <a href="#" id="verifyLink" target="_blank"
+                                    class="text-blue-600 hover:underline truncate block w-full">-</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Auto-Split Preview -->
+                    <div>
+                        <h4
+                            class="text-sm font-bold text-gray-700 uppercase tracking-wide mb-3 flex items-center gap-2">
+                            🤖 Auto-Split System
+                            <span class="bg-blue-100 text-blue-700 text-[10px] px-2 py-0.5 rounded-full">AI Ready</span>
+                        </h4>
+                        <div class="border rounded-xl overflow-hidden">
+                            <table class="w-full text-sm text-left">
+                                <thead class="bg-gray-50 text-gray-500 text-xs uppercase font-bold">
+                                    <tr>
+                                        <th class="p-3 pl-4">Mission Title</th>
+                                        <th class="p-3">Platform</th>
+                                        <th class="p-3 text-center">Quota</th>
+                                        <th class="p-3 text-right">Reward</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="verifyMissionPreview" class="divide-y divide-gray-100">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer -->
+                <div class="bg-gray-50 p-6 flex justify-between items-center border-t border-gray-100">
+                    <span class="text-xs text-gray-400 italic" id="verifyTotalCost">Est. Cost: Rp 0</span>
+                    <div class="flex gap-3">
+                        <button onclick="closeVerificationModal()"
+                            class="px-5 py-2.5 rounded-xl text-gray-600 hover:bg-gray-200 font-bold text-sm transition">Cancel</button>
+                        <button onclick="confirmVerification()"
+                            class="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-lg shadow-blue-600/30 transition transform hover:-translate-y-0.5 flex items-center gap-2">
+                            <span>🚀 Process Order</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pricing Configuration Modal -->
+
+
+        <!-- Fallback Script for Pricing Modal -->
+        <script>
+            // Hard Fallback for Modal Button
+            document.addEventListener('DOMContentLoaded', () => {
+                const btn = document.getElementById('btnGlobalPricing');
+                if (btn) {
+                    console.log('✅ Global Pricing Button Found');
+                    btn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        console.log('⚡ Global Pricing Clicked (EventListener)');
+                        if (typeof window.openGlobalPricingModal === 'function') {
+                            window.openGlobalPricingModal();
+                        } else {
+                            alert('⚠️ System Processing... Please wait or refresh.');
+                            // Try to define it if missing
+                            if (document.getElementById('globalPricingModal')) {
+                                document.getElementById('globalPricingModal').classList.remove('hidden');
+                                document.getElementById('globalPricingModal').classList.add('flex');
+                            }
+                        }
+                    });
+                } else {
+                    console.error('❌ Global Pricing Button NOT Found');
+                }
+            });
+
+            // Fallback Logic Definition
+            window.openGlobalPricingModal = function () {
+                console.log('Opening Global Pricing Modal (Fallback fn)...');
+                const modal = document.getElementById('globalPricingModal');
+                if (modal) {
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+
+                    const marginInput = document.getElementById('selectedMargin');
+                    if (marginInput && !marginInput.value) window.selectMargin(20);
+                } else {
+                    alert('Error: Pricing Modal Not Found in DOM');
+                }
+            };
+
+            window.closePricingModal = function () {
+                const modal = document.getElementById('globalPricingModal');
+                if (modal) {
+                    modal.classList.add('hidden');
+                    modal.classList.remove('flex');
+                }
+            };
+
+            window.selectMargin = function (val) {
+                const el = document.getElementById('selectedMargin');
+                if (el) el.value = val;
+                document.querySelectorAll('.btn-margin').forEach(btn => {
+                    const btnVal = parseInt(btn.getAttribute('data-val'));
+                    if (btnVal === val) {
+                        btn.classList.add('bg-green-600', 'text-white', 'border-green-600');
+                        btn.classList.remove('bg-white', 'text-green-700', 'border-green-200');
+                    } else {
+                        btn.classList.remove('bg-green-600', 'text-white', 'border-green-600');
+                        btn.classList.add('bg-white', 'text-green-700', 'border-green-200');
+                    }
+                });
+            };
+        </script>
+</body>
+
+</html>

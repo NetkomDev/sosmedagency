@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sosmed Agency - Digital Growth Agency</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0F172A',
+                        accent: '#38BDF8',
+                        gold: '#FACC15',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    </style>
+</head>
+
+<body class="bg-primary text-white antialiased">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 bg-primary/80 backdrop-blur-md border-b border-white/10">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div id="navTitle"
+                class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-accent to-purple-500">
+                Sosmed Agency
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="toggleLanguage()"
+                    class="text-gray-300 hover:text-white transition font-medium text-sm border border-white/20 px-3 py-1 rounded-full">
+                    <span id="langLabel">ID</span>
+                </button>
+                <a href="https://wa.me/6281234567890" target="_blank"
+                    class="bg-white text-primary px-6 py-2 rounded-full font-semibold hover:bg-gray-200 transition">
+                    <span data-i18n="navContact">Hubungi Kami</span>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative pt-32 pb-20 px-6 text-center overflow-hidden">
+        <div
+            class="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-900/40 via-primary to-primary z-0">
+        </div>
+        <div class="relative z-10 max-w-4xl mx-auto">
+            <span class="text-accent font-semibold tracking-wider uppercase text-sm">Engagement-as-a-Service</span>
+            <h1 class="mt-6 text-5xl md:text-7xl font-bold leading-tight">
+                <span data-i18n="heroTitle1">Ledakkan Penjualan &</span> <br>
+                <span class="bg-clip-text text-transparent bg-gradient-to-r from-accent via-blue-400 to-purple-500"
+                    data-i18n="heroTitle2">Popularitas
+                    Anda</span>
+            </h1>
+            <p class="mt-6 text-xl text-gray-400 max-w-2xl mx-auto" data-i18n="heroSubtitle">
+                Platform social proof #1 dengan ribuan pasukan siap memviralkan brand, produk, dan konten Anda secara
+                organik.
+            </p>
+            <div class="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="#services"
+                    class="px-8 py-4 bg-accent text-primary font-bold rounded-full hover:bg-blue-400 transition transform hover:scale-105 shadow-lg shadow-blue-500/25">
+                    <span data-i18n="heroBtnServices">Lihat Layanan</span>
+                </a>
+                <a href="https://wa.me/6281234567890" target="_blank"
+                    class="px-8 py-4 bg-white/10 border border-white/20 font-bold rounded-full hover:bg-white/20 transition backdrop-blur-sm">
+                    <span data-i18n="heroBtnConsult">Konsultasi Gratis</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Stats -->
+    <section class="py-10 border-y border-white/5 bg-white/5">
+        <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+                <div class="text-3xl font-bold text-white">10k+</div>
+                <div class="text-gray-400 text-sm" data-i18n="statsActiveTroops">Pasukan Aktif</div>
+            </div>
+            <div>
+                <div class="text-3xl font-bold text-white">50k+</div>
+                <div class="text-gray-400 text-sm" data-i18n="statsMissionsCompleted">Misi Selesai</div>
+            </div>
+            <div>
+                <div class="text-3xl font-bold text-white">99%</div>
+                <div class="text-gray-400 text-sm" data-i18n="statsClientSatisfaction">Kepuasan Klien</div>
+            </div>
+            <div>
+                <div class="text-3xl font-bold text-white">24/7</div>
+                <div class="text-gray-400 text-sm" data-i18n="statsSupportSystem">Support Sistem</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Grid -->
+    <section id="services" class="py-24 px-6 relative">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold" data-i18n="servicesTitle">Layanan Unggulan</h2>
+                <p class="text-gray-400 mt-4" data-i18n="servicesSubtitle">Solusi lengkap untuk kebutuhan digital
+                    marketing Anda</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Service 1 -->
+                <div class="glass-card p-8 rounded-3xl hover:border-accent/50 transition duration-300 group">
+                    <div
+                        class="w-14 h-14 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 mb-6 group-hover:scale-110 transition">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="service1Title">Review & Rating UMKM</h3>
+                    <p class="text-gray-400" data-i18n="service1Desc">Tingkatkan kepercayaan pelanggan dengan ulasan
+                        bintang 5 real human di
+                        Google Maps & Marketplace.</p>
+                </div>
+
+                <!-- Service 2 -->
+                <div class="glass-card p-8 rounded-3xl hover:border-accent/50 transition duration-300 group">
+                    <div
+                        class="w-14 h-14 bg-pink-500/20 rounded-2xl flex items-center justify-center text-pink-400 mb-6 group-hover:scale-110 transition">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="service2Title">Social Interaction</h3>
+                    <p class="text-gray-400" data-i18n="service2Desc">Like, Comment, & Share untuk Instagram dan TikTok.
+                        Bikin kontenmu masuk FYP
+                        dan viral instan.</p>
+                </div>
+
+                <!-- Service 3 -->
+                <div class="glass-card p-8 rounded-3xl hover:border-accent/50 transition duration-300 group">
+                    <div
+                        class="w-14 h-14 bg-red-500/20 rounded-2xl flex items-center justify-center text-red-400 mb-6 group-hover:scale-110 transition">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3" data-i18n="service3Title">YouTube Growth</h3>
+                    <p class="text-gray-400" data-i18n="service3Desc">Tambah Subscriber dan Jam Tayang dengan audiens
+                        Indonesia asli. Aman untuk
+                        monetisasi.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="py-24 px-6 relative" id="pricing">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold" data-i18n="pricingTitle">Pilih Paket Kesuksesan Anda</h2>
+                <p class="text-gray-400 mt-4" data-i18n="pricingSubtitle">Investasi terbaik untuk pertumbuhan bisnis
+                    yang signifikan.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-8">
+
+                <!-- Card 1: UMKM & Local SEO -->
+                <div
+                    class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 hover:border-blue-500/50 transition duration-300 flex flex-col relative z-[5]">
+                    <div class="mb-4">
+                        <h3 class="text-2xl font-bold text-blue-400" data-i18n="pkgUmkmTitle">UMKM & Local SEO</h3>
+                        <p class="text-sm text-gray-400 mt-2" data-i18n="pkgUmkmDesc">Dominasi pencarian lokal & Google
+                            Maps.</p>
+                    </div>
+
+                    <div id="umkm-container" class="space-y-2 mb-4 flex-1">
+                        <!-- Dynamic Content -->
+                        <div class="text-center text-gray-500 animate-pulse text-sm" data-i18n="loadingUmkm">Loading
+                            UMKM Packages...</div>
+                    </div>
+
+                </div>
+
+                <!-- Social Media Engagement -->
+                <div
+                    class="glass-card p-8 rounded-3xl border border-white/10 flex flex-col hover:border-pink-500/50 transition duration-300 relative transform md:-translate-y-4 z-10 bg-slate-900/80">
+                    <div class="absolute -top-4 w-full left-0 text-center">
+                        <span
+                            class="bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider">Most
+                            Viral</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-pink-400 mb-2" data-i18n="socialMediaTitle">Social Media</h3>
+                    <p class="text-sm text-gray-400 mb-4" data-i18n="choosePlatform">Pilih Platform:</p>
+
+                    <!-- Tabs -->
+                    <div class="flex justify-center space-x-4 mb-6">
+                        <button onclick="switchSosmedTab('tiktok')" id="tab-tiktok"
+                            class="p-3 bg-pink-500/20 text-pink-500 rounded-xl transition hover:bg-pink-500/30 border border-pink-500 shadow-lg shadow-pink-500/20 w-12 h-12 flex items-center justify-center">
+                            <i class="fa-brands fa-tiktok text-xl"></i>
+                        </button>
+                        <button onclick="switchSosmedTab('youtube')" id="tab-youtube"
+                            class="p-3 bg-white/5 text-red-500 rounded-xl transition hover:bg-white/10 hover:text-red-600 w-12 h-12 flex items-center justify-center">
+                            <i class="fa-brands fa-youtube text-xl"></i>
+                        </button>
+                        <button onclick="switchSosmedTab('ig')" id="tab-ig"
+                            class="p-3 bg-white/5 text-purple-500 rounded-xl transition hover:bg-white/10 hover:text-purple-600 w-12 h-12 flex items-center justify-center">
+                            <i class="fa-brands fa-instagram text-xl"></i>
+                        </button>
+                        <button onclick="switchSosmedTab('fb')" id="tab-fb"
+                            class="p-3 bg-white/5 text-blue-500 rounded-xl transition hover:bg-white/10 hover:text-blue-600 w-12 h-12 flex items-center justify-center">
+                            <i class="fa-brands fa-facebook text-xl"></i>
+                        </button>
+                    </div>
+
+                    <!-- Content: TikTok -->
+                    <div id="content-tiktok" class="sosmed-content space-y-2 mb-4 flex-1">
+                        <!-- Dynamic Content -->
+                        <div class="text-center text-gray-500 animate-pulse text-sm">Loading TikTok Packages...</div>
+                    </div>
+
+                    <!-- Content: YouTube -->
+                    <div id="content-youtube" class="sosmed-content space-y-2 mb-4 flex-1 hidden">
+                        <!-- Dynamic Content -->
+                    </div>
+
+                    <!-- Content: IG -->
+                    <div id="content-ig" class="sosmed-content space-y-2 mb-4 flex-1 hidden">
+                        <!-- Dynamic Content -->
+                    </div>
+
+                    <!-- Content: FB -->
+                    <div id="content-fb" class="sosmed-content space-y-2 mb-4 flex-1 hidden">
+                        <!-- Dynamic Content -->
+                    </div>
+
+
+                </div>
+
+                <!-- Card 3: E-Commerce Growth (New) -->
+                <div
+                    class="glass-card p-6 md:p-8 rounded-3xl border border-white/10 flex flex-col hover:border-orange-500/50 transition duration-300 relative z-[5] bg-slate-900/80">
+                    <div class="absolute -top-4 w-full left-0 text-center">
+                        <span
+                            class="bg-gradient-to-r from-orange-500 to-red-500 text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider">Sales
+                            Booster</span>
+                    </div>
+                    <div class="mb-4">
+                        <h3 class="text-xl font-bold text-orange-400">Marketplace</h3>
+                        <p class="text-sm text-gray-400 mt-2">Optimasi toko Shopee & TikTok Shop. Safety First.</p>
+                    </div>
+
+                    <!-- E-Commerce Tabs -->
+                    <div class="flex justify-center space-x-4 mb-6">
+                        <button onclick="switchEcomTab('shopee')" id="tab-shopee"
+                            class="p-3 bg-orange-500/20 text-orange-500 rounded-xl transition hover:bg-orange-500/30 border border-orange-500 shadow-lg shadow-orange-500/20 w-12 h-12 flex items-center justify-center overflow-hidden">
+                            <!-- Custom Composite Shopee Icon -->
+                            <div class="relative flex items-center justify-center w-full h-full">
+                                <i class="fa-solid fa-bag-shopping text-3xl text-[#EE4D2D]"></i>
+                                <span class="absolute text-white font-sans font-normal text-lg pt-2 pr-[1px]">S</span>
+                            </div>
+                        </button>
+                        <button onclick="switchEcomTab('tiktok-shop')" id="tab-tiktok-shop"
+                            class="p-3 bg-white/5 text-gray-400 rounded-xl transition hover:bg-white/10 hover:text-white w-12 h-12 flex items-center justify-center relative group overflow-hidden">
+                            <!-- Custom Composite TikTok Shop Icon -->
+                            <div class="relative flex items-center justify-center w-full h-full">
+                                <i
+                                    class="fa-solid fa-bag-shopping text-3xl text-gray-400 group-hover:text-white transition-colors"></i>
+                                <!-- TikTok Glitch Effect -->
+                                <i class="fa-brands fa-tiktok absolute text-[#25F4EE] text-[11px] pt-2 pr-[2px]"></i>
+                                <i class="fa-brands fa-tiktok absolute text-[#FE2C55] text-[11px] pt-2 pl-[2px]"></i>
+                                <i class="fa-brands fa-tiktok absolute text-black text-[11px] pt-2 z-10"></i>
+                            </div>
+                        </button>
+                    </div>
+
+                    <!-- Content: Shopee -->
+                    <div id="content-shopee" class="ecom-content space-y-2 mb-4 flex-1">
+                        <div class="text-center text-gray-500 animate-pulse text-sm">Loading Shopee...</div>
+                    </div>
+
+                    <!-- Content: TikTok Shop -->
+                    <div id="content-tiktok-shop" class="ecom-content space-y-2 mb-4 flex-1 hidden">
+                        <!-- Dynamic -->
+                    </div>
+
+                </div>
+
+                <!-- Custom Campaign script to handle tabs & Dynamic Data -->
+                <script type="module">
+                    import { SUPABASE_URL, SUPABASE_ANON_KEY } from './supabase.js';
+                    // Initialize Supabase (re-using checkout.js import)
+                    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+                    // State
+                    let packagesData = [];
+                    let cacheTtlMinutes = 5; // default, overwritten by app_settings
+
+                    async function init() {
+                        // Fetch settings first so cacheTtl is available for fetchPackages
+                        await fetchSettings();
+                        await fetchPackages();
+                        // Ensure TikTok tab is active and its content is shown on load
+                        switchSosmedTab('tiktok');
+                    }
+
+                    async function fetchSettings() {
+                        const { data } = await supabase.from('app_settings').select('*');
+                        if (!data) return;
+
+                        data.forEach(setting => {
+                            if (setting.key === 'admin_whatsapp') {
+                                const waUrl = `https://wa.me/${setting.value}?text=Halo%20Sosmed Agency%20(Admin)%2C%20saya%20ingin%20konsultasi`;
+                                document.querySelectorAll('a[href*="wa.me"]').forEach(el => {
+                                    el.href = waUrl;
+                                    el.target = '_blank';
+                                });
+                            }
+                            if (setting.key === 'site_title') {
+                                document.title = setting.value + ' - Digital Growth Agency';
+                                const navTitle = document.getElementById('navTitle');
+                                if (navTitle) navTitle.innerText = setting.value;
+                            }
+                            if (setting.key === 'payment_instructions') {
+                                const payInfo = document.getElementById('paymentInfo');
+                                if (payInfo) payInfo.innerText = setting.value;
+                            }
+                            if (setting.key === 'qris_url') {
+                                const qrisImg = document.getElementById('qrisImage');
+                                if (qrisImg) qrisImg.src = setting.value;
+                            }
+                            if (setting.key === 'cache_ttl_minutes' && setting.value) {
+                                cacheTtlMinutes = parseInt(setting.value) || 5;
+                            }
+                            // Maintenance mode — show overlay if enabled
+                            if (setting.key === 'maintenance_mode' && setting.value === 'true') {
+                                showMaintenanceOverlay();
+                            }
+                        });
+                    }
+
+                    function showMaintenanceOverlay() {
+                        // Don't show for admin (check URL param ?admin=1)
+                        if (new URLSearchParams(window.location.search).has('admin')) return;
+
+                        const overlay = document.createElement('div');
+                        overlay.id = 'maintenanceOverlay';
+                        overlay.style.cssText = 'position:fixed;inset:0;z-index:99999;background:#0F172A;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;';
+                        overlay.innerHTML = `
+                            <div style="font-size:4rem;margin-bottom:1.5rem;">🔧</div>
+                            <h1 style="font-size:2rem;font-weight:800;color:#38BDF8;margin-bottom:1rem;">Sedang Dalam Perbaikan</h1>
+                            <p style="color:#94A3B8;max-width:480px;line-height:1.7;">
+                                Sosmed Agency sedang dalam proses pemeliharaan untuk meningkatkan layanan kami.<br>
+                                Silakan kembali beberapa saat lagi. Terima kasih atas kesabaran Anda! 🙏
+                            </p>
+                            <a href="https://wa.me/628981593287" target="_blank" 
+                               style="margin-top:2rem;padding:0.75rem 2rem;background:#38BDF8;color:#0F172A;border-radius:999px;font-weight:700;text-decoration:none;transition:opacity 0.2s;"
+                               onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+                                💬 Hubungi Admin
+                            </a>
+                        `;
+                        document.body.appendChild(overlay);
+                    }
+
+                    async function fetchPackages() {
+                        try {
+                            // Check localStorage cache (TTL from settings)
+                            const cacheTtlMs = cacheTtlMinutes * 60 * 1000;
+                            const cached = localStorage.getItem('mc_packages');
+                            const cacheTs = localStorage.getItem('mc_packages_ts');
+                            if (cached && cacheTs && Date.now() - Number(cacheTs) < cacheTtlMs) {
+                                packagesData = JSON.parse(cached);
+                                packagesData.sort((a, b) => a.price - b.price);
+                                renderPackages();
+                                return;
+                            }
+
+                            const { data, error } = await supabase
+                                .from('packages')
+                                .select('*')
+                                .order('category')
+                                .order('order_index');
+
+                            if (error) {
+                                console.error('Error fetching packages:', error);
+                                showErrorStates();
+                                return;
+                            }
+
+                            packagesData = data || [];
+                            packagesData.sort((a, b) => a.price - b.price);
+
+                            // Save to cache
+                            localStorage.setItem('mc_packages', JSON.stringify(packagesData));
+                            localStorage.setItem('mc_packages_ts', String(Date.now()));
+
+                            renderPackages();
+                        } catch (err) {
+                            console.error('Unexpected error fetching packages:', err);
+                            showErrorStates();
+                        }
+                    }
+
+                    function showErrorStates() {
+                        const ids = ['umkm-container', 'content-tiktok', 'content-youtube', 'content-ig', 'content-fb'];
+                        ids.forEach(id => {
+                            const el = document.getElementById(id);
+                            if (el) el.innerHTML = '<div class="text-center text-red-400 text-sm">Gagal memuat paket. Silakan refresh.</div>';
+                        });
+                    }
+
+                    function renderPackages() {
+                        // UMKM Render (Google Maps matches UMKM section)
+                        const umkmContainer = document.getElementById('umkm-container');
+                        if (umkmContainer) {
+                            const umkmPackages = packagesData.filter(p =>
+                                p.category === 'UMKM' ||
+                                p.category === 'Google Maps' ||
+                                p.category.toLowerCase().includes('maps')
+                            );
+                            if (umkmPackages.length > 0) {
+                                umkmContainer.innerHTML = umkmPackages.map(pkg => createPackageCard(pkg)).join('');
+                            } else {
+                                umkmContainer.innerHTML = '<div class="text-center text-gray-500 text-sm">Belum ada paket tersedia.</div>';
+                            }
+                        }
+
+                        // Sosmed Render (TikTok default)
+                        renderSosmedContent('TikTok');
+                        renderSosmedContent('YouTube');
+                        renderSosmedContent('Instagram');
+                        renderSosmedContent('Facebook');
+                        // E-Commerce Render
+                        renderEcomContent('Shopee');
+                        renderEcomContent('TikTok Shop');
+                    }
+
+                    function renderEcomContent(platformName) {
+                        const s = platformName.toLowerCase().replace(/\s+/g, '-'); // tiktok-shop
+                        const containerId = 'content-' + s;
+                        const container = document.getElementById(containerId);
+                        if (!container) return;
+
+                        const pkgs = packagesData.filter(p => {
+                            const cat = (p.category || '').toLowerCase();
+                            const sub = (p.sub_category || '').toLowerCase();
+                            const target = platformName.toLowerCase();
+
+                            // 1. Standard: Category "E-Commerce" + Sub "Shopee"
+                            if (cat === 'e-commerce') {
+                                return sub === target || sub.includes(target);
+                            }
+
+                            // 2. Legacy: Category itself is "Shopee"
+                            if (cat === target) return true;
+
+                            // 3. Special Case for TikTok Shop (might be sub "tiktok shop" under Sosmed?)
+                            // No, should be strict E-Commerce now.
+                            return false;
+                        });
+
+                        if (pkgs.length > 0) {
+                            container.innerHTML = pkgs.map(pkg => createPackageCard(pkg)).join('');
+                        } else {
+                            container.innerHTML = '<div class="text-center text-gray-500 text-sm py-4">Paket E-Commerce belum tersedia.</div>';
+                        }
+                    }
+
+                    window.switchEcomTab = (platform) => {
+                        // Hide all ecom content
+                        document.querySelectorAll('.ecom-content').forEach(el => el.classList.add('hidden'));
+                        // Show selected
+                        document.getElementById('content-' + platform).classList.remove('hidden');
+
+                        // Reset tabs
+                        const tabs = ['shopee', 'tiktok-shop'];
+                        tabs.forEach(t => {
+                            const btn = document.getElementById('tab-' + t);
+                            btn.className = 'p-3 bg-white/5 text-gray-400 rounded-xl transition hover:bg-white/10 hover:text-white';
+                        });
+
+                        // Active State
+                        const activeBtn = document.getElementById('tab-' + platform);
+                        activeBtn.classList.remove('bg-white/5', 'text-gray-400');
+                        activeBtn.classList.add('shadow-lg', 'border');
+
+                        if (platform === 'shopee') {
+                            activeBtn.classList.add('bg-orange-500/20', 'text-orange-500', 'border-orange-500', 'shadow-orange-500/20');
+                        } else {
+                            activeBtn.classList.add('bg-stone-500/20', 'text-stone-500', 'border-stone-500', 'shadow-stone-500/20');
+                        }
+                    };
+
+                    function renderSosmedContent(platformName) {
+                        const containerId = 'content-' + mapSubCatToId(platformName);
+                        const container = document.getElementById(containerId);
+                        if (!container) return;
+
+                        // Filter: Allow Category match OR SubCategory match
+                        const pkgs = packagesData.filter(p => {
+                            const cat = p.category ? p.category.toLowerCase() : '';
+                            const sub = p.sub_category ? p.sub_category.toLowerCase() : '';
+                            const target = platformName.toLowerCase();
+
+                            // Check if Category is "SOSMED" and sub matches target
+                            if (cat === 'sosmed' && sub === target) return true;
+                            // Check if Category itself matches target
+                            if (cat === target) return true;
+
+                            // Handle aliases
+                            if (target === 'instagram' && (cat === 'ig' || sub === 'ig')) return true;
+                            if (target === 'facebook' && (cat === 'fb' || sub === 'fb')) return true;
+
+                            return false;
+                        });
+
+                        if (pkgs.length > 0) {
+                            container.innerHTML = pkgs.map(pkg => createPackageCard(pkg)).join('');
+                        } else {
+                            container.innerHTML = '<div class="text-center text-gray-500 text-sm py-4">Paket belum tersedia untuk platform ini.</div>';
+                        }
+                    }
+
+                    function mapSubCatToId(sub) {
+                        if (!sub) return '';
+                        const s = sub.toLowerCase();
+                        if (s === 'tiktok') return 'tiktok';
+                        if (s === 'youtube') return 'youtube';
+                        if (s === 'instagram' || s === 'ig') return 'ig';
+                        if (s === 'facebook' || s === 'fb') return 'fb';
+                        return '';
+                    }
+
+                    function createPackageCard(pkg) {
+                        const isSultan = (pkg.name && pkg.name.toLowerCase().includes('sultan')) || pkg.is_best_value;
+                        const isDecoy = pkg.is_decoy;
+
+                        // Display Name Fix for TikTok Shop
+                        let displayName = pkg.name;
+                        if (pkg.category === 'TikTok Shop' && !displayName.toLowerCase().includes('tiktok')) {
+                            displayName = displayName.replace(/Shop/i, 'TikTok Shop');
+                        }
+
+                        // Determine Platform/Sub for Theme
+                        let sub = '';
+                        const cat = pkg.category ? pkg.category.toLowerCase() : '';
+                        if (cat === 'sosmed') sub = pkg.sub_category ? pkg.sub_category.toLowerCase() : '';
+                        else sub = cat; // Use category as sub if not "SOSMED" (e.g. "instagram")
+
+                        let themeColor = 'emerald';
+
+                        // Theme Logic
+                        if (sub.includes('tiktok') && !sub.includes('shop')) themeColor = 'pink';
+                        else if (sub.includes('tiktok shop')) themeColor = 'stone';
+                        else if (sub.includes('shopee')) themeColor = 'orange';
+                        else if (sub.includes('youtube')) themeColor = 'red';
+                        else if (sub.includes('instagram') || sub.includes('ig')) themeColor = 'purple';
+                        else if (sub.includes('facebook') || sub.includes('fb')) themeColor = 'blue';
+                        else if (sub.includes('maps') || sub.includes('google')) themeColor = 'emerald';
+
+                        // Explicit Class Maps for Tailwind Scanner
+                        const bgMap = {
+                            emerald: 'bg-gradient-to-b from-emerald-900/30 to-slate-900/80 border-emerald-500/30 shadow-emerald-500/10',
+                            pink: 'bg-gradient-to-b from-pink-900/30 to-slate-900/80 border-pink-500/30 shadow-pink-500/10',
+                            red: 'bg-gradient-to-b from-red-900/30 to-slate-900/80 border-red-500/30 shadow-red-500/10',
+                            purple: 'bg-gradient-to-b from-purple-900/30 to-slate-900/80 border-purple-500/30 shadow-purple-500/10',
+                            blue: 'bg-gradient-to-b from-blue-900/30 to-slate-900/80 border-blue-500/30 shadow-blue-500/10',
+                            orange: 'bg-gradient-to-b from-orange-900/30 to-slate-900/80 border-orange-500/30 shadow-orange-500/10',
+                            stone: 'bg-gradient-to-b from-stone-800/50 to-slate-900/80 border-stone-500/30 shadow-stone-500/10'
+                        };
+
+                        const btnMap = {
+                            emerald: 'bg-gradient-to-r from-emerald-600 to-emerald-500 hover:from-emerald-500 hover:to-emerald-400 shadow-emerald-500/25',
+                            pink: 'bg-gradient-to-r from-pink-600 to-pink-500 hover:from-pink-500 hover:to-pink-400 shadow-pink-500/25',
+                            red: 'bg-gradient-to-r from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 shadow-red-500/25',
+                            purple: 'bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 shadow-purple-500/25',
+                            blue: 'bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 shadow-blue-500/25',
+                            orange: 'bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 shadow-orange-500/25',
+                            stone: 'bg-gradient-to-r from-stone-600 to-stone-500 hover:from-stone-500 hover:to-stone-400 shadow-stone-500/25'
+                        };
+
+                        const textMap = {
+                            emerald: 'text-emerald-400',
+                            pink: 'text-pink-400',
+                            red: 'text-red-400',
+                            purple: 'text-purple-400',
+                            blue: 'text-blue-400',
+                            orange: 'text-orange-400',
+                            stone: 'text-stone-400'
+                        };
+
+                        const iconBgMap = {
+                            emerald: 'bg-emerald-500/20',
+                            pink: 'bg-pink-500/20',
+                            red: 'bg-red-500/20',
+                            purple: 'bg-purple-500/20',
+                            blue: 'bg-blue-500/20',
+                            orange: 'bg-orange-500/20',
+                            stone: 'bg-stone-500/20'
+                        };
+
+                        // Extremely Compact Layout
+                        let cardClass = "relative group rounded-lg p-3 border transition-all duration-300 hover:scale-[1.01] flex flex-col gap-2";
+                        // Button: Full Rounded and slightly larger text
+                        let btnClass = "w-full py-1.5 rounded-full text-[11px] uppercase tracking-wider font-bold transition-all mt-auto border border-white/10 bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white";
+                        let priceClass = "text-xl font-bold text-white";
+
+                        if (isSultan) {
+                            cardClass += ` shadow-md z-10 ${bgMap[themeColor]}`; // Removed scale-105 to save space
+                            btnClass = `w-full py-1.5 rounded-full text-[11px] uppercase tracking-wider font-bold transition-all mt-auto text-white shadow-md ${btnMap[themeColor]}`;
+                            priceClass = `text-2xl font-extrabold drop-shadow-sm ${textMap[themeColor]}`;
+                        } else if (isDecoy) {
+                            cardClass += " bg-slate-800/40 border-white/5 opacity-75 hover:opacity-100 grayscale hover:grayscale-0";
+                        } else {
+                            cardClass += " bg-slate-800/40 border-white/5 hover:border-white/10 hover:bg-slate-800/60";
+                        }
+
+                        // Specific Layout Logic for SOSMED (Most Viral)
+                        const isSosmed = pkg.category === 'SOSMED';
+                        const listClass = isSosmed ? "columns-2 gap-x-2 mb-1 flex-1 relative" : "space-y-1 mb-1 flex-1 relative";
+                        const itemClass = isSosmed ? "break-inside-avoid mb-1" : "";
+
+                        const featuresList = (pkg.features && Array.isArray(pkg.features)) ? pkg.features : [];
+
+                        // Helper for icon mapping
+                        const mapFeatureIcon = (text) => {
+                            const t = text.toLowerCase();
+                            // Keep icon color consistent with theme
+                            const iconClass = `text-[10px] ${textMap[themeColor] || 'text-gray-400'}`;
+
+                            if (t.includes('follow') || t.includes('subscriber')) return `<i class="fa-solid fa-user-plus ${iconClass}"></i>`;
+                            if (t.includes('like')) return `<i class="fa-solid fa-heart ${iconClass}"></i>`;
+                            if (t.includes('view') || t.includes('watch')) return `<i class="fa-solid fa-eye ${iconClass}"></i>`;
+                            if (t.includes('comment') || t.includes('komen')) return `<i class="fa-solid fa-comments ${iconClass}"></i>`;
+                            if (t.includes('rating') || t.includes('star') || t.includes('bintang')) return `<i class="fa-solid fa-star ${iconClass}"></i>`;
+                            if (t.includes('review') || t.includes('ulasan')) return `<i class="fa-solid fa-pen-nib ${iconClass}"></i>`;
+                            if (t.includes('share')) return `<i class="fa-solid fa-share-nodes ${iconClass}"></i>`;
+                            if (t.includes('save') || t.includes('wishlist')) return `<i class="fa-solid fa-bookmark ${iconClass}"></i>`;
+                            if (t.includes('safety') || t.includes('aman') || t.includes('shield') || t.includes('garansi')) return `<i class="fa-solid fa-shield-halved ${iconClass}"></i>`;
+
+                            // Default check
+                            return `<i class="fa-solid fa-check ${iconClass}"></i>`;
+                        };
+
+                        const featuresHtml = featuresList.map(f => {
+                            // Extract clean text (remove @price)
+                            const cleanText = f.replace(/\s*@\d+/g, '').trim();
+                            const iconHtml = mapFeatureIcon(cleanText);
+
+                            return `
+                            <li class="flex items-center gap-2 text-xs text-gray-400 group-hover:text-gray-300 transition-colors leading-tight ${itemClass}">
+                                <div class="w-5 h-5 rounded-full ${iconBgMap[themeColor] || 'bg-gray-500/20'} flex items-center justify-center shrink-0">
+                                   ${iconHtml}
+                                </div>
+                                <span>${cleanText}</span>
+                            </li>
+                        `}).join('');
+
+                        return `
+                        <div class="${cardClass}">
+                            ${isSultan ? `<div class="absolute -top-2 right-2 bg-gradient-to-r from-yellow-600 to-yellow-500 text-white text-[9px] uppercase font-bold px-2 py-0.5 rounded shadow-lg tracking-widest border border-white/10">Best Value</div>` : ''}
+
+                            <div class="flex justify-between items-center">
+                                <h4 class="${isSultan ? 'text-white' : 'text-gray-400 group-hover:text-white'} font-bold text-sm tracking-wide transition-colors">${displayName || pkg.name}</h4>
+                                <div class="${priceClass}">Rp ${pkg.price.toLocaleString('id-ID')}</div>
+                            </div>
+
+                            <div class="h-px w-full bg-gradient-to-r from-transparent via-white/5 to-transparent my-0.5"></div>
+
+                            <ul class="${listClass}">
+                                ${featuresHtml}
+                            </ul>
+
+                            <button onclick="openCheckout('${pkg.category}', ${pkg.sub_category ? `'` + pkg.sub_category + `'` : 'null'}, '${pkg.id}')" class="${btnClass} relative z-[2] cursor-pointer">
+                                Pilih
+                            </button>
+                        </div>
+                        `;
+                    }
+
+                    // Existing Switch Tab Logic
+                    window.switchSosmedTab = (platform) => {
+                        // Hide all content
+                        document.querySelectorAll('.sosmed-content').forEach(el => el.classList.add('hidden'));
+                        // Show selected content
+                        document.getElementById('content-' + platform).classList.remove('hidden');
+
+                        // Reset all tabs
+                        const tabs = ['tiktok', 'youtube', 'ig', 'fb'];
+                        tabs.forEach(t => {
+                            const btn = document.getElementById('tab-' + t);
+                            btn.className = 'p-3 bg-white/5 rounded-xl transition hover:bg-white/10 opacity-70 hover:opacity-100';
+
+                            // Restore original colors
+                            if (t === 'tiktok') btn.classList.add('text-pink-500');
+                            if (t === 'youtube') btn.classList.add('text-red-500');
+                            if (t === 'ig') btn.classList.add('text-purple-500');
+                            if (t === 'fb') btn.classList.add('text-blue-500');
+                        });
+
+                        // Active Tab Style
+                        const activeBtn = document.getElementById('tab-' + platform);
+
+                        // Active: High opacity, border, glowing
+                        let activeClasses = 'p-3 rounded-xl transition border shadow-lg opacity-100 ';
+
+                        if (platform === 'tiktok') activeClasses += 'bg-pink-500/20 text-pink-500 border-pink-500 shadow-pink-500/20';
+                        if (platform === 'youtube') activeClasses += 'bg-red-600/20 text-red-500 border-red-500 shadow-red-500/20';
+                        if (platform === 'ig') activeClasses += 'bg-purple-600/20 text-purple-500 border-purple-500 shadow-purple-500/20';
+                        if (platform === 'fb') activeClasses += 'bg-blue-600/20 text-blue-500 border-blue-500 shadow-blue-500/20';
+
+                        activeBtn.className = activeClasses;
+                    }
+
+                    // Run Init
+                    init();
+                </script>
+
+                <!-- Custom Campaign -->
+                <div
+                    class="glass-card p-8 rounded-3xl border border-white/10 flex flex-col hover:border-purple-500/50 transition duration-300 relative group md:translate-y-0 md:col-start-2">
+                    <div
+                        class="absolute -top-4 w-full left-0 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <span
+                            class="bg-gradient-to-r from-purple-500 to-indigo-500 text-white text-xs font-bold px-4 py-1 rounded-full uppercase tracking-wider shadow-lg shadow-purple-500/20">Special
+                            Offer</span>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400 mb-2"
+                        data-i18n="customCampaignTitle">
+                        Custom Campaign</h3>
+                    <p class="text-sm text-gray-400 mb-6" data-i18n="customCampaignDesc">Political Branding & Massive
+                        Movement.</p>
+
+                    <div class="space-y-4 mb-8 flex-1 flex flex-col justify-center">
+                        <div
+                            class="relative w-full rounded-2xl p-6 border border-purple-500/30 bg-gradient-to-b from-purple-900/30 to-slate-900/80 shadow-xl shadow-purple-500/10 hover:scale-[1.02] transition-all duration-300 z-10 flex flex-col items-center text-center">
+
+                            <h4 class="font-bold text-white text-lg tracking-wide" data-i18n="trendingPackageTitle">
+                                Paket Trending</h4>
+                            <div class="flex items-baseline gap-1 mt-2 mb-4">
+                                <span class="text-sm text-gray-500 font-semibold transform -translate-y-2"
+                                    data-i18n="startingFrom">Mulai</span>
+                                <span class="text-3xl font-extrabold text-purple-400 drop-shadow-sm">Rp 2.000.000</span>
+                            </div>
+
+                            <div
+                                class="h-px w-full bg-gradient-to-r from-transparent via-purple-500/20 to-transparent mb-4">
+                            </div>
+
+                            <p class="text-sm text-gray-300 leading-relaxed mb-4" data-i18n="trendingPackageDesc">
+                                Gerakan massa serentak untuk menaikkan hashtag, trending topic, atau meramaikan opini
+                                publik.
+                            </p>
+
+                            <div
+                                class="mt-auto inline-flex items-center gap-2 bg-purple-500/10 text-purple-300 border border-purple-500/20 px-3 py-1.5 rounded-full text-xs font-medium">
+                                <span class="relative flex h-2 w-2">
+                                    <span
+                                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-2 w-2 bg-purple-500"></span>
+                                </span>
+                                <span data-i18n="pilkadaReady">Pilkada 2029 Ready</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button onclick="openCheckout('CUSTOM')"
+                        class="w-full py-3 rounded-full text-sm font-bold transition-all bg-purple-600 hover:bg-purple-500 text-white shadow-lg shadow-purple-500/25 border border-purple-500/50">
+                        <span data-i18n="btnContactAdmin">Hubungi Admin</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- 100% Real Human -->
+                <div class="p-6 rounded-2xl bg-white/5 border border-white/10 flex items-center space-x-4">
+                    <div class="p-3 bg-green-500/20 rounded-xl text-green-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 4 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-white" data-i18n="trustBadge1Title">100% Real Human</h4>
+                        <p class="text-sm text-gray-400" data-i18n="trustBadge1Desc">Dikerjakan oleh pasukan manusia
+                            asli, bukan bot.</p>
+                    </div>
+                </div>
+
+                <!-- Bebas Banned -->
+                <div class="p-6 rounded-2xl bg-white/5 border border-white/10 flex items-center space-x-4">
+                    <div class="p-3 bg-blue-500/20 rounded-xl text-blue-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-white" data-i18n="trustBadge2Title">Bebas Banned</h4>
+                        <p class="text-sm text-gray-400" data-i18n="trustBadge2Desc">Pola natural & organik, aman untuk
+                            akun Anda.</p>
+                    </div>
+                </div>
+
+                <!-- Algoritma Friendly -->
+                <div class="p-6 rounded-2xl bg-white/5 border border-white/10 flex items-center space-x-4">
+                    <div class="p-3 bg-purple-500/20 rounded-xl text-purple-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                    </div>
+                    <div>
+                        <h4 class="text-lg font-bold text-white" data-i18n="trustBadge3Title">Algoritma Friendly</h4>
+                        <p class="text-sm text-gray-400" data-i18n="trustBadge3Desc">Memicu viralitas alami dan
+                            rekomendasi platform.</p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-20 px-6">
+        <div
+            class="max-w-5xl mx-auto glass-card rounded-3xl p-10 md:p-16 text-center border border-accent/20 relative overflow-hidden">
+            <div
+                class="absolute top-0 right-0 w-64 h-64 bg-accent/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2">
+            </div>
+            <div class="relative z-10">
+                <h2 class="text-3xl md:text-5xl font-bold mb-6" data-i18n="ctaTitle">Siap Meledakkan Bisnis Anda?</h2>
+                <p class="text-xl text-gray-400 mb-8" data-i18n="ctaDesc">Konsultasikan kebutuhan engagement Anda dengan
+                    tim ahli kami
+                    sekarang.</p>
+                <a href="https://wa.me/6281234567890" target="_blank"
+                    class="inline-flex items-center gap-2 bg-green-500 hover:bg-green-600 text-white font-bold py-4 px-8 rounded-full transition transform hover:scale-105">
+                    <span data-i18n="ctaBtn">Konsultasi via WhatsApp</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-primary pt-16 pb-8 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-6 text-center text-gray-500 text-sm">
+            <p data-i18n="footerText">&copy; 2026 Sosmed Agency Agency. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Checkout Modal -->
+    <div id="checkoutModal"
+        class="fixed inset-0 bg-black/90 hidden items-center justify-center p-4 z-50 backdrop-blur-sm transition-opacity">
+        <div
+            class="bg-slate-900 rounded-2xl w-full max-w-lg border border-white/10 relative flex flex-col max-h-[90vh] shadow-2xl">
+
+            <!-- Sticky Header -->
+            <div
+                class="p-6 border-b border-white/10 flex justify-between items-center bg-slate-900 sticky top-0 z-20 rounded-t-2xl">
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-0.5" data-i18n="modalOrderTitle">Form Pemesanan</h3>
+                    <p class="text-xs text-gray-400"><span data-i18n="modalTotal">Total:</span> <span
+                            id="displayPkgPrice" class="text-accent font-bold"></span></p>
+                </div>
+                <button onclick="closeCheckout()"
+                    class="text-gray-400 hover:text-white bg-white/5 hover:bg-white/10 p-2 rounded-full transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Scrollable Content -->
+            <div class="p-6 overflow-y-auto custom-scrollbar space-y-4">
+                <form id="checkoutForm" class="space-y-4">
+                    <!-- Platform Select -->
+                    <div id="platformContainer" class="hidden">
+                        <label class="block text-sm text-gray-400 mb-1" data-i18n="labelPlatform">Pilih Platform</label>
+                        <select id="platformSelect"
+                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-accent appearance-none cursor-pointer">
+                            <option value="">-- Pilih Platform --</option>
+                            <option value="Instagram">Instagram</option>
+                            <option value="TikTok">TikTok</option>
+                            <option value="YouTube">YouTube</option>
+                            <option value="Facebook">Facebook</option>
+                        </select>
+                    </div>
+
+                    <!-- Package Select (Custom Dropdown) -->
+                    <div class="relative">
+                        <label class="block text-sm text-gray-400 mb-1" data-i18n="labelPackage">Pilih Paket</label>
+                        <input type="hidden" id="packageIdInput" required>
+
+                        <!-- Trigger Button -->
+                        <button type="button" id="customSelectTrigger"
+                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-3 text-left text-white focus:outline-none focus:border-accent flex justify-between items-center group">
+                            <span id="customSelectLabel" data-i18n="optionSelectPackage">-- Pilih Paket --</span>
+                            <svg class="w-4 h-4 text-gray-400 group-hover:text-white transition" fill="none"
+                                stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M19 9l-7 7-7-7">
+                                </path>
+                            </svg>
+                        </button>
+
+                        <!-- Dropdown Options -->
+                        <div id="customSelectOptions"
+                            class="hidden absolute top-full left-0 w-full z-10 mt-1 bg-slate-900 border border-slate-700 rounded-xl shadow-xl max-h-60 overflow-y-auto ring-1 ring-black ring-opacity-5 focus:outline-none">
+                            <!-- Options populated by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Package Details -->
+                    <div id="packageDetails"
+                        class="hidden p-4 bg-slate-800/50 rounded-lg border border-slate-700 text-sm">
+                        <div class="text-gray-400 mb-2 text-xs uppercase tracking-wider font-semibold">Rincian Paket:
+                        </div>
+                        <ul id="packageFeatures" class="list-disc list-inside text-gray-300 space-y-1">
+                            <!-- Features populated by JS -->
+                        </ul>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1" data-i18n="labelFullName">Nama Lengkap</label>
+                        <input type="text" id="cName"
+                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-accent"
+                            required>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1" data-i18n="labelWhatsapp">Nomor WhatsApp</label>
+                        <input type="tel" id="cWhatsapp"
+                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-accent"
+                            required>
+                    </div>
+                    <div>
+                        <label class="block text-sm text-gray-400 mb-1" data-i18n="labelLink">Link Target
+                            (Sosmed/Gmaps)</label>
+                        <input type="url" id="cLink" placeholder="https://..."
+                            class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-accent"
+                            required>
+                    </div>
+
+                    <!-- Gmaps Specific Fields (Hidden by Default) -->
+                    <div id="checkoutGmapsFields"
+                        class="hidden space-y-3 bg-yellow-500/10 p-4 rounded-xl border border-yellow-500/30 animate-fade-in">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span
+                                class="bg-yellow-500 text-black text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">Wajib
+                                Diisi</span>
+                            <h4 class="text-xs font-bold text-yellow-500 uppercase tracking-wider">Detail Bisnis di
+                                Google
+                                Maps</h4>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">Nama Usaha /
+                                Bisnis</label>
+                            <input type="text" id="cBusinessName"
+                                class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-yellow-500 transition-colors text-sm"
+                                placeholder="Contoh: Kopi Kenangan Senopati">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">Kategori Bisnis (Sesuai
+                                Gmaps)</label>
+                            <select id="cBusinessCategory"
+                                class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-yellow-500 transition-colors text-sm appearance-none cursor-pointer">
+                                <option value="">-- Pilih Kategori --</option>
+                                <optgroup label="Makanan & Minuman">
+                                    <option value="Restoran">Restoran</option>
+                                    <option value="Kafe/Coffee Shop">Kafe / Coffee Shop</option>
+                                    <option value="Warung Makan">Warung Makan</option>
+                                    <option value="Toko Roti/Bakery">Toko Roti / Bakery</option>
+                                    <option value="Katering">Jasa Katering</option>
+                                </optgroup>
+                                <optgroup label="Belanja & Retail">
+                                    <option value="Toko Pakaian">Toko Pakaian / Fashion</option>
+                                    <option value="Toko Elektronik">Toko Elektronik & Gadget</option>
+                                    <option value="Minimarket/Supermarket">Minimarket / Supermarket</option>
+                                    <option value="Toko Perabot">Toko Perabot Rumah</option>
+                                    <option value="Toko Oleh-Oleh">Toko Oleh-Oleh / Souvenir</option>
+                                </optgroup>
+                                <optgroup label="Layanan Jasa">
+                                    <option value="Salon Kecantikan">Salon Kecantikan / Barbershop</option>
+                                    <option value="Bengkel">Bengkel Otomotif</option>
+                                    <option value="Laundry">Jasa Laundry</option>
+                                    <option value="Jasa Kebersihan">Jasa Kebersihan (Cleaning Service)</option>
+                                    <option value="Fotografer">Fotografer / Studio Foto</option>
+                                    <option value="Percetakan">Percetakan / Digital Printing</option>
+                                </optgroup>
+                                <optgroup label="Kesehatan & Medis">
+                                    <option value="Klinik Dokter">Klinik Dokter Umum / Spesialis</option>
+                                    <option value="Dokter Gigi">Dokter Gigi</option>
+                                    <option value="Apotek">Apotek</option>
+                                    <option value="Rumah Sakit">Rumah Sakit</option>
+                                    <option value="Klinik Kecantikan">Klinik Kecantikan / Estetika</option>
+                                </optgroup>
+                                <optgroup label="Pariwisata & Akomodasi">
+                                    <option value="Hotel">Hotel</option>
+                                    <option value="Villa/Penginapan">Villa / Guest House</option>
+                                    <option value="Agen Perjalanan">Agen Perjalanan / Travel</option>
+                                    <option value="Objek Wisata">Objek Wisata</option>
+                                    <option value="Rental Mobil/Motor">Rental Mobil / Motor</option>
+                                </optgroup>
+                                <optgroup label="Pendidikan">
+                                    <option value="Sekolah">Sekolah</option>
+                                    <option value="Kursus/Bimbingan Belajar">Kursus / Bimbingan Belajar</option>
+                                    <option value="Kampus/Universitas">Kampus / Universitas</option>
+                                </optgroup>
+                                <optgroup label="Lainnya">
+                                    <option value="Kantor Perusahaan">Kantor Perusahaan</option>
+                                    <option value="Tempat Ibadah">Tempat Ibadah</option>
+                                    <option value="Lembaga Pemerintah">Lembaga Pemerintah</option>
+                                    <option value="Organisasi">Organisasi / Komunitas</option>
+                                    <option value="Lainnya">Kategori Lainnya</option>
+                                </optgroup>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">Keunggulan & Deskripsi
+                                Singkat</label>
+                            <textarea id="cBusinessDesc" rows="2"
+                                class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-yellow-500 transition-colors text-sm"
+                                placeholder="Contoh: Tempat nyaman, kopi enak, wifi kencang, staff ramah."></textarea>
+                            <p class="text-[10px] text-gray-500 mt-1 italic">*Data ini akan digunakan untuk membuat
+                                ulasan yang relevan.</p>
+                        </div>
+                    </div>
+
+                    <div id="instructionsContainer"
+                        class="hidden space-y-3 bg-blue-500/10 p-4 rounded-xl border border-blue-500/30 animate-fade-in">
+                        <div class="flex items-center gap-2 mb-1">
+                            <span
+                                class="bg-amber-500 text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase tracking-wider">Wajib</span>
+                            <h4 class="text-xs font-bold text-blue-400 uppercase tracking-wider">Detail Instruksi</h4>
+                        </div>
+                        <p class="text-[10px] text-gray-400 leading-tight mb-2">Mohon isi detail ini agar pesanan dapat
+                            diproses sesuai keinginan Anda.</p>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">Topik Konten <span
+                                    class="text-red-500">*</span></label>
+                            <input type="text" id="cTopic"
+                                class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors text-sm"
+                                placeholder="Contoh: Review Skincare, Unboxing Sepatu">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">Gaya Bahasa <span
+                                    class="text-red-500">*</span></label>
+                            <select id="cTone"
+                                class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors text-sm appearance-none cursor-pointer">
+                                <option value="Casual">Santai / Gaul / Akrab</option>
+                                <option value="Formal">Sopan / Formal / Profesional</option>
+                                <option value="Enthusiastic">Antusias / Semangat / Excited</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">Poin Penting <span
+                                    class="text-red-500">*</span></label>
+                            <textarea id="cPoints" rows="2"
+                                class="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white focus:outline-none focus:border-blue-500 transition-colors text-sm"
+                                placeholder="Contoh: Puji pengiriman cepat, barang sesuai foto..."></textarea>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="btnCheckoutSubmit"
+                        class="w-full bg-accent hover:bg-blue-400 text-primary font-bold py-3 rounded-xl transition mt-4 shadow-lg shadow-blue-500/20">
+                        <span data-i18n="btnProceedPayment">Lanjut ke Pembayaran</span>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Sticky Bottom Decoration (Optional) -->
+            <div class="h-2 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 rounded-b-2xl"></div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="fixed inset-0 bg-black/90 hidden items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl w-full max-w-md p-8 relative text-center">
+            <button onclick="closePayment()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600">✕</button>
+
+            <h3 class="text-2xl font-bold text-gray-900 mb-2" data-i18n="modalPaymentTitle">Scan QRIS</h3>
+            <p id="paymentInfo" class="text-sm text-gray-500 mb-6" data-i18n="paymentInfoText">BCA, GoPay, OVO, Dana,
+                ShopeePay</p>
+
+            <!-- Placeholder QRIS -->
+            <div class="bg-gray-100 p-4 rounded-xl mb-6 inline-block">
+                <img id="qrisImage" src="https://placehold.co/250x250?text=Scan+QRIS+Sosmed Agency" alt="QRIS"
+                    class="w-48 h-48 mx-auto object-cover">
+            </div>
+
+            <div class="bg-yellow-50 border border-yellow-200 rounded-xl p-4 mb-3 text-left">
+                <p class="text-xs text-yellow-800 font-bold uppercase tracking-wider mb-1"
+                    data-i18n="labelTotalPayment">Total Bayar</p>
+                <div class="text-3xl font-bold text-gray-900" id="totalTransfer">Rp 0</div>
+                <p class="text-xs text-red-500 mt-2 font-semibold">
+                    <span data-i18n="paymentWarning">*PENTING: Transfer tepat hingga 3 digit terakhir</span> (<span
+                        id="uniqueAmount">...</span>) <span data-i18n="paymentWarningSuffix">untuk
+                        verifikasi otomatis.</span>
+                </p>
+            </div>
+
+            <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6 text-center">
+                <p class="text-xs text-blue-800 font-semibold flex items-center justify-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z">
+                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    <span data-i18n="screenshotInstruction">Mohon SCREENSHOT bukti transfer sebelum klik tombol di
+                        bawah.</span>
+                </p>
+            </div>
+
+            <button onclick="confirmTransfer()"
+                class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <span data-i18n="btnConfirmTransfer">Saya Sudah Transfer</span>
+            </button>
+        </div>
+    </div>
+
+    <script type="module" src="checkout.js"></script>
+    <script>
+        let currentLang = 'id';
+        let translations = [];
+
+        async function loadTranslations() {
+            try {
+                const response = await fetch('translations.json');
+                translations = await response.json();
+                applyLanguage(currentLang);
+            } catch (e) {
+                console.error("Failed to load translations", e);
+            }
+        }
+
+        function applyLanguage(lang) {
+            document.documentElement.lang = lang;
+            document.getElementById('langLabel').textContent = lang.toUpperCase();
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const translation = translations.find(t => t.key === key);
+                if (translation && translation[lang]) {
+                    el.textContent = translation[lang];
+                }
+            });
+
+            document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+                const key = el.getAttribute('data-i18n-placeholder');
+                const translation = translations.find(t => t.key === key);
+                if (translation && translation[lang]) {
+                    el.placeholder = translation[lang];
+                }
+            });
+        }
+
+        window.getTranslation = (key) => {
+            const t = translations.find(item => item.key === key);
+            if (t && t[currentLang]) {
+                return t[currentLang];
+            }
+            return key; // Fallback
+        };
+
+        window.getCurrentLang = () => currentLang;
+
+        window.toggleLanguage = () => {
+            currentLang = currentLang === 'id' ? 'en' : 'id';
+            applyLanguage(currentLang);
+        };
+
+        // Load translations on startup
+        loadTranslations();
+    </script>
+
+
+</body>
+
+</html>

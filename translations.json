@@ -1,0 +1,352 @@
+[
+    {
+        "key": "navTitle",
+        "en": "Sosmed Agency",
+        "id": "Sosmed Agency"
+    },
+    {
+        "key": "navContact",
+        "en": "Contact Us",
+        "id": "Hubungi Kami"
+    },
+    {
+        "key": "heroTitle1",
+        "en": "Explode Your Sales &",
+        "id": "Ledakkan Penjualan &"
+    },
+    {
+        "key": "heroTitle2",
+        "en": "Your Popularity",
+        "id": "Popularitas Anda"
+    },
+    {
+        "key": "heroSubtitle",
+        "en": "#1 social proof platform with thousands of troops ready to viralize your brand, product, and content organically.",
+        "id": "Platform social proof #1 dengan ribuan pasukan siap memviralkan brand, produk, dan konten Anda secara organik."
+    },
+    {
+        "key": "heroBtnServices",
+        "en": "View Services",
+        "id": "Lihat Layanan"
+    },
+    {
+        "key": "heroBtnConsult",
+        "en": "Free Consultation",
+        "id": "Konsultasi Gratis"
+    },
+    {
+        "key": "statsActiveTroops",
+        "en": "Active Troops",
+        "id": "Pasukan Aktif"
+    },
+    {
+        "key": "statsMissionsCompleted",
+        "en": "Missions Completed",
+        "id": "Misi Selesai"
+    },
+    {
+        "key": "statsClientSatisfaction",
+        "en": "Client Satisfaction",
+        "id": "Kepuasan Klien"
+    },
+    {
+        "key": "statsSupportSystem",
+        "en": "Support System",
+        "id": "Support Sistem"
+    },
+    {
+        "key": "servicesTitle",
+        "en": "Featured Services",
+        "id": "Layanan Unggulan"
+    },
+    {
+        "key": "servicesSubtitle",
+        "en": "Complete solutions for your digital marketing needs",
+        "id": "Solusi lengkap untuk kebutuhan digital marketing Anda"
+    },
+    {
+        "key": "service1Title",
+        "en": "Review & Rating UMKM",
+        "id": "Review & Rating UMKM"
+    },
+    {
+        "key": "service1Desc",
+        "en": "Boost customer trust with 5-star real human reviews on Google Maps & Marketplace.",
+        "id": "Tingkatkan kepercayaan pelanggan dengan ulasan bintang 5 real human di Google Maps & Marketplace."
+    },
+    {
+        "key": "service2Title",
+        "en": "Social Interaction",
+        "id": "Social Interaction"
+    },
+    {
+        "key": "service2Desc",
+        "en": "Like, Comment, & Share for Instagram and TikTok. Make your content hit FYP and go viral instantly.",
+        "id": "Like, Comment, & Share untuk Instagram dan TikTok. Bikin kontenmu masuk FYP dan viral instan."
+    },
+    {
+        "key": "service3Title",
+        "en": "YouTube Growth",
+        "id": "YouTube Growth"
+    },
+    {
+        "key": "service3Desc",
+        "en": "Increase Subscribers and Watch Hours with real Indonesian audience. Safe for monetization.",
+        "id": "Tambah Subscriber dan Jam Tayang dengan audiens Indonesia asli. Aman untuk monetisasi."
+    },
+    {
+        "key": "pricingTitle",
+        "en": "Choose Your Success Package",
+        "id": "Pilih Paket Kesuksesan Anda"
+    },
+    {
+        "key": "pricingSubtitle",
+        "en": "Best investment for significant business growth.",
+        "id": "Investasi terbaik untuk pertumbuhan bisnis yang signifikan."
+    },
+    {
+        "key": "pkgUmkmTitle",
+        "en": "UMKM & Local SEO",
+        "id": "UMKM & Local SEO"
+    },
+    {
+        "key": "pkgUmkmDesc",
+        "en": "Dominate local search & Google Maps.",
+        "id": "Dominasi pencarian lokal & Google Maps."
+    },
+    {
+        "key": "loadingUmkm",
+        "en": "Loading UMKM Packages...",
+        "id": "Memuat Paket UMKM..."
+    },
+    {
+        "key": "btnOrderNow",
+        "en": "Order Now",
+        "id": "Pesan Sekarang"
+    },
+    {
+        "key": "socialMediaTitle",
+        "en": "Social Media",
+        "id": "Social Media"
+    },
+    {
+        "key": "choosePlatform",
+        "en": "Choose Platform:",
+        "id": "Pilih Platform:"
+    },
+    {
+        "key": "loadingTiktok",
+        "en": "Loading TikTok Packages...",
+        "id": "Memuat Paket TikTok..."
+    },
+    {
+        "key": "customCampaignTitle",
+        "en": "Custom Campaign",
+        "id": "Custom Campaign"
+    },
+    {
+        "key": "customCampaignDesc",
+        "en": "Political Branding & Massive Movement.",
+        "id": "Political Branding & Massive Movement."
+    },
+    {
+        "key": "trendingPackageTitle",
+        "en": "Trending Package",
+        "id": "Paket Trending"
+    },
+    {
+        "key": "startingFrom",
+        "en": "Starting from",
+        "id": "Mulai"
+    },
+    {
+        "key": "trendingPackageDesc",
+        "en": "Simultaneous mass movement to raise hashtags, trending topics, or enliven public opinion.",
+        "id": "Gerakan massa serentak untuk menaikkan hashtag, trending topic, atau meramaikan opini publik."
+    },
+    {
+        "key": "pilkadaReady",
+        "en": "Election 2029 Ready",
+        "id": "Pilkada 2029 Ready"
+    },
+    {
+        "key": "btnContactAdmin",
+        "en": "Contact Admin",
+        "id": "Hubungi Admin"
+    },
+    {
+        "key": "trustBadge1Title",
+        "en": "100% Real Human",
+        "id": "100% Real Human"
+    },
+    {
+        "key": "trustBadge1Desc",
+        "en": "Done by real human troops, not bots.",
+        "id": "Dikerjakan oleh pasukan manusia asli, bukan bot."
+    },
+    {
+        "key": "trustBadge2Title",
+        "en": "Ban Free",
+        "id": "Bebas Banned"
+    },
+    {
+        "key": "trustBadge2Desc",
+        "en": "Natural & organic patterns, safe for your account.",
+        "id": "Pola natural & organik, aman untuk akun Anda."
+    },
+    {
+        "key": "trustBadge3Title",
+        "en": "Algorithm Friendly",
+        "id": "Algoritma Friendly"
+    },
+    {
+        "key": "trustBadge3Desc",
+        "en": "Triggers natural virality and platform recommendations.",
+        "id": "Memicu viralitas alami dan rekomendasi platform."
+    },
+    {
+        "key": "ctaTitle",
+        "en": "Ready to Explode Your Business?",
+        "id": "Siap Meledakkan Bisnis Anda?"
+    },
+    {
+        "key": "ctaDesc",
+        "en": "Consult your engagement needs with our expert team now.",
+        "id": "Konsultasikan kebutuhan engagement Anda dengan tim ahli kami sekarang."
+    },
+    {
+        "key": "ctaBtn",
+        "en": "Consult via WhatsApp",
+        "id": "Konsultasi via WhatsApp"
+    },
+    {
+        "key": "footerText",
+        "en": "© 2026 Sosmed Agency Agency. All rights reserved.",
+        "id": "© 2026 Sosmed Agency Agency. All rights reserved."
+    },
+    {
+        "key": "modalOrderTitle",
+        "en": "Order Form",
+        "id": "Form Pemesanan"
+    },
+    {
+        "key": "modalTotal",
+        "en": "Total:",
+        "id": "Total:"
+    },
+    {
+        "key": "labelPlatform",
+        "en": "Choose Platform",
+        "id": "Pilih Platform"
+    },
+    {
+        "key": "optionSelectPlatform",
+        "en": "-- Select Platform --",
+        "id": "-- Pilih Platform --"
+    },
+    {
+        "key": "labelPackage",
+        "en": "Choose Package",
+        "id": "Pilih Paket"
+    },
+    {
+        "key": "optionSelectPackage",
+        "en": "-- Select Package --",
+        "id": "-- Pilih Paket --"
+    },
+    {
+        "key": "labelFullName",
+        "en": "Full Name",
+        "id": "Nama Lengkap"
+    },
+    {
+        "key": "labelWhatsapp",
+        "en": "WhatsApp Number",
+        "id": "Nomor WhatsApp"
+    },
+    {
+        "key": "labelLink",
+        "en": "Target Link (Sosmed/Gmaps)",
+        "id": "Link Target (Sosmed/Gmaps)"
+    },
+    {
+        "key": "labelInstructions",
+        "en": "Special Instructions (Optional)",
+        "id": "Instruksi Khusus (Opsional)"
+    },
+    {
+        "key": "placeholderInstructions",
+        "en": "Example: Comments using slang...",
+        "id": "Contoh: Komentar pakai bahasa gaul..."
+    },
+    {
+        "key": "btnProceedPayment",
+        "en": "Proceed to Payment",
+        "id": "Lanjut ke Pembayaran"
+    },
+    {
+        "key": "modalPaymentTitle",
+        "en": "Scan QRIS",
+        "id": "Scan QRIS"
+    },
+    {
+        "key": "paymentInfoText",
+        "en": "BCA, GoPay, OVO, Dana, ShopeePay",
+        "id": "BCA, GoPay, OVO, Dana, ShopeePay"
+    },
+    {
+        "key": "labelTotalPayment",
+        "en": "Total Payment",
+        "id": "Total Bayar"
+    },
+    {
+        "key": "paymentWarning",
+        "en": "*IMPORTANT: Transfer exactly up to the last 3 digits",
+        "id": "*PENTING: Transfer tepat hingga 3 digit terakhir"
+    },
+    {
+        "key": "paymentWarningSuffix",
+        "en": "for automatic verification.",
+        "id": "untuk verifikasi otomatis."
+    },
+    {
+        "key": "screenshotInstruction",
+        "en": "Please SCREENSHOT proof of transfer before clicking the button below.",
+        "id": "Mohon SCREENSHOT bukti transfer sebelum klik tombol di bawah."
+    },
+    {
+        "key": "btnConfirmTransfer",
+        "en": "I Have Transferred",
+        "id": "Saya Sudah Transfer"
+    },
+    {
+        "key": "alertSelectPackage",
+        "en": "Please select a package first.",
+        "id": "Silakan pilih paket terlebih dahulu."
+    },
+    {
+        "key": "alertInvalidLink",
+        "en": "Please enter a valid link (starting with https://)",
+        "id": "Mohon masukkan link yang valid (awali dengan https://)"
+    },
+    {
+        "key": "alertOrderFailed",
+        "en": "Failed to create order: ",
+        "id": "Gagal membuat pesanan: "
+    },
+    {
+        "key": "alertTransferConfirmed",
+        "en": "Thank you! Admin will verify your payment.",
+        "id": "Terima kasih! Admin akan memverifikasi pembayaran Anda."
+    },
+    {
+        "key": "waMessagePrefix",
+        "en": "Hello Admin Sosmed Agency, I have transferred Rp ",
+        "id": "Halo Admin Sosmed Agency, saya sudah transfer sebesar Rp "
+    },
+    {
+        "key": "waMessageSuffix",
+        "en": ". Please verify. Here is the transfer proof...",
+        "id": ". Mohon diverifikasi. Berikut ini bukti transfernya..."
+    }
+]

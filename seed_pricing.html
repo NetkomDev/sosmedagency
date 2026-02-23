@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Seed Pricing Strategy 2026</title>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script type="module">
+        import { SUPABASE_URL, SUPABASE_ANON_KEY } from './supabase.js';
+
+        // Initialize client with Anon Key (relies on active Admin Session for RLS)
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Check Session
+        async function checkSession() {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                alert('⚠️ Authentication Required!\n\nPlease LOG IN to the Admin Dashboard (admin.html) first to authorize these changes.');
+                document.getElementById('status').innerText = 'Please Login to Admin Dashboard first.';
+                document.getElementById('seedBtn').disabled = true;
+                return false;
+            }
+            return true;
+        }
+
+        const packages = [
+            // Instagram (Target Margin 10-20%)
+            { category: 'Instagram', name: 'Starter IG', price: 99000, description: 'Super Value Pack.', features: ['150 Followers @400', '100 Likes @150', '10 Comments @500'], is_best_value: false, is_decoy: false, order_index: 1 },
+            { category: 'Instagram', name: 'Business IG', price: 199000, description: 'Interaksi Tinggi.', features: ['300 Followers @400', '250 Likes @150', '20 Comments @500'], is_best_value: false, is_decoy: true, order_index: 2 },
+            { category: 'Instagram', name: 'Sultan IG', price: 399000, description: 'Viral Massive Impact.', features: ['700 Followers @400', '300 Likes @150', '20 Comments @500', 'Bonus Review @2500'], is_best_value: true, is_decoy: false, order_index: 3 },
+
+            // TikTok (Target Margin 10-20%)
+            { category: 'TikTok', name: 'Starter TT', price: 99000, description: 'Mulai viral di TikTok.', features: ['120 Followers @400', '100 Likes @150', '1000 Views @25'], is_best_value: false, is_decoy: false, order_index: 4 },
+            { category: 'TikTok', name: 'Business TT', price: 199000, description: 'Peningkat interaksi (Decoy).', features: ['220 Followers @400', '250 Likes @150', '2000 Views @25'], is_best_value: false, is_decoy: true, order_index: 5 },
+            { category: 'TikTok', name: 'Sultan TT', price: 399000, description: 'Dominasi FYP (Best Value).', features: ['450 Followers @400', '400 Likes @150', '3000 Views @25', '20 Comments @500'], is_best_value: true, is_decoy: false, order_index: 6 },
+
+            // YouTube (Target Margin 10-20%)
+            { category: 'YouTube', name: 'Starter YT', price: 99000, description: 'Boost Channel Awal.', features: ['100 Subscribers @400', '100 Likes @150', '800 Views @30'], is_best_value: false, is_decoy: false, order_index: 7 },
+            { category: 'YouTube', name: 'Business YT', price: 249000, description: 'Akselerasi Monetisasi.', features: ['300 Subscribers @400', '200 Likes @150', '2000 Views @30'], is_best_value: false, is_decoy: true, order_index: 8 },
+            { category: 'YouTube', name: 'Sultan YT', price: 499000, description: 'Paket Youtuber Pro.', features: ['600 Subscribers @400', '400 Likes @150', '4000 Views @30', 'Bonus Comments @500'], is_best_value: true, is_decoy: false, order_index: 9 },
+
+            // Facebook (Target Margin 10-20%)
+            { category: 'Facebook', name: 'Starter FB', price: 99000, description: 'Personal Branding Kuat.', features: ['150 Followers @400', '150 Post Likes @150', '5 Comments @500'], is_best_value: false, is_decoy: false, order_index: 10 },
+            { category: 'Facebook', name: 'Business FB', price: 199000, description: 'Kredibilitas Bisnis.', features: ['300 Followers @400', '250 Post Likes @150', '10 Comments @500'], is_best_value: false, is_decoy: true, order_index: 11 },
+            { category: 'Facebook', name: 'Sultan FB', price: 399000, description: 'Dominasi Pasar FB.', features: ['600 Followers @400', '500 Post Likes @150', '25 Comments @500', 'Bonus Share @200'], is_best_value: true, is_decoy: false, order_index: 12 },
+
+            // Shopee & Marketplace (Aggressive Quantity)
+            { category: 'Shopee', name: 'Starter Shopee', price: 149000, description: 'Reputasi Toko Instan.', features: ['40 Rating Bintang 5 @2500', '20 Product Likes @150', 'High Safety'], is_best_value: false, is_decoy: false, order_index: 13 },
+            { category: 'Shopee', name: 'Business Shopee', price: 299000, description: 'Toko Terpercaya.', features: ['80 Rating Bintang 5 @2500', '100 Product Likes @150'], is_best_value: false, is_decoy: true, order_index: 14 },
+            { category: 'Shopee', name: 'Sultan Shopee', price: 499000, description: 'Star Seller Boost.', features: ['140 Rating Bintang 5 @2500', '200 Product Likes @150', '10 Photo Reviews @3000', 'Shield Guarantee'], is_best_value: true, is_decoy: false, order_index: 15 },
+
+            // TikTok Shop
+            { category: 'TikTok Shop', name: 'Starter TikTok Shop', price: 149000, description: 'Reputasi Shop Instan.', features: ['40 Rating Bintang 5 @2500', '20 Product Likes @150', 'High Safety'], is_best_value: false, is_decoy: false, order_index: 16 },
+            { category: 'TikTok Shop', name: 'Business TikTok Shop', price: 299000, description: 'Shop Terpercaya.', features: ['80 Rating Bintang 5 @2500', '100 Product Likes @150'], is_best_value: false, is_decoy: true, order_index: 17 },
+            { category: 'TikTok Shop', name: 'Sultan TikTok Shop', price: 499000, description: 'Viral Shop Boost.', features: ['140 Rating Bintang 5 @2500', '200 Product Likes @150', '10 Photo Reviews @3000', 'Shield Guarantee'], is_best_value: true, is_decoy: false, order_index: 18 },
+
+            // Google Maps (Aggressive Quantity)
+            { category: 'Google Maps', name: 'Starter Gmaps', price: 149000, description: 'Reputasi Dasar Kuat.', features: ['45 Reviews @500', 'Rating Bintang 5'], is_best_value: false, is_decoy: false, order_index: 19 },
+            { category: 'Google Maps', name: 'Business Gmaps', price: 349000, description: 'Reputasi Bisnis Menengah.', features: ['110 Reviews @500', 'Rating Bintang 5', 'Ulasan Detail'], is_best_value: false, is_decoy: true, order_index: 20 },
+            { category: 'Google Maps', name: 'Sultan Gmaps', price: 599000, description: 'Reputasi Bisnis Besar.', features: ['190 Ulasan Detail & Foto @600', 'Rating Bintang 5'], is_best_value: true, is_decoy: false, order_index: 21 }
+        ];
+
+        window.seed = async () => {
+            // Pre-check Session
+            const hasSession = await checkSession();
+            if (!hasSession) return;
+
+            const btn = document.getElementById('seedBtn');
+            btn.disabled = true;
+            btn.innerText = 'Updating Safe Mode...';
+
+            try {
+                // 1. Fetch Existing Packages
+                const { data: existingPackages, error: fetchError } = await supabase.from('packages').select('id, category, name');
+                if (fetchError) throw fetchError;
+
+                let updatedCount = 0;
+                let insertedCount = 0;
+
+                // 2. Loop through New Strategy
+                for (const pkg of packages) {
+                    // Find match
+                    const match = existingPackages.find(ep =>
+                        ep.name === pkg.name && ep.category === pkg.category
+                    );
+
+                    if (match) {
+                        // UPDATE existing package
+                        const { error: updateError } = await supabase
+                            .from('packages')
+                            .update({
+                                price: pkg.price,
+                                description: pkg.description,
+                                features: pkg.features, // New Qty
+                                is_best_value: pkg.is_best_value,
+                                is_decoy: pkg.is_decoy,
+                                order_index: pkg.order_index
+                            })
+                            .eq('id', match.id);
+
+                        if (updateError) throw updateError;
+                        updatedCount++;
+                    } else {
+                        // INSERT new package
+                        const { error: insertError } = await supabase
+                            .from('packages')
+                            .insert(pkg);
+
+                        if (insertError) throw insertError;
+                        insertedCount++;
+                    }
+                }
+
+                alert(`✅ Success! Updated: ${updatedCount}, Inserted: ${insertedCount}.\nNo data loss.`);
+                btn.innerText = 'Done';
+            } catch (err) {
+                console.error(err);
+                alert('❌ Error: ' + err.message);
+                btn.innerText = 'Retry';
+                btn.disabled = false;
+            }
+        };
+    </script>
+</head>
+
+<body
+    style="font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background: #0F172A; color: #f1f5f9;">
+    <div
+        style="position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 50% 0%, rgba(56,189,248,0.08), transparent);pointer-events:none;">
+    </div>
+    <div style="position:relative;z-index:1;text-align:center;">
+        <h1
+            style="font-size:1.75rem;font-weight:900;background:linear-gradient(135deg,#38BDF8,#22d3ee);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:0.5rem;">
+            MisiCuan Pricing Overhaul</h1>
+        <p style="color: #94a3b8; margin-bottom:1.5rem;">Includes <b style="color:#22d3ee">Aggressive 10-20% Margin
+                QTY</b> and <b style="color:#10b981">Safe Upsert</b>.</p>
+        <div
+            style="background: rgba(17,24,39,0.7); padding: 1.5rem; border-radius: 1rem; border:1px solid rgba(239,68,68,0.2); margin-bottom: 1.5rem; max-width: 500px; text-align: center;backdrop-filter:blur(10px);">
+            <h3
+                style="margin-top: 0; color: #fca5a5; font-size:0.85rem; text-transform:uppercase; letter-spacing:0.05em;">
+                ⚠️ REQUIREMENT</h3>
+            <p style="font-size: 0.8rem; color: #94a3b8; margin-top:0.5rem;">You MUST click the button below to apply
+                the new Youtube/FB/Decoy
+                packages to the database.</p>
+        </div>
+        <button id="seedBtn" onclick="window.seed()"
+            style="padding: 0.875rem 2rem; font-size: 0.875rem; font-weight: 700; color: white; background: linear-gradient(135deg,#38BDF8,#7DD3FC); border: none; border-radius: 0.875rem; cursor: pointer; transition: all 0.3s; box-shadow: 0 8px 30px rgba(56,189,248,0.2);"
+            onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 12px 40px rgba(56,189,248,0.3)'"
+            onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 8px 30px rgba(56,189,248,0.2)'">
+            🚀 Apply Pricing Strategy (Update DB)
+        </button>
+        <p style="margin-top:1rem;font-size:0.7rem;color:#64748b;">
+            <a href="admin.html" style="color:#22d3ee;text-decoration:none;">← Back to Admin</a>
+        </p>
+    </div>
+</body>
+
+</html>
