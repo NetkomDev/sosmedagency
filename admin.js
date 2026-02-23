@@ -36,14 +36,10 @@ window.fetchActiveMissions = async () => {
 
     // Fetch directly using Supabase (or create API wrapper if preferred)
     // Filter: Status != Completed (Active, Draft, Pending, etc.)
-    const { data: missions, error } = await supabase
+    const { data: rawMissions, error } = await supabase
         .from('missions')
-        .select('*')
-        .neq('status', 'Completed') // Show everything NOT completed? Or just 'Active'?
-        // User asked for "Active Missions", implying status='Active'
-        // But usually we want to see Pending too. Let's show all non-archived?
-        // Let's stick to 'Active' status to be precise, or all valid ones.
-        .eq('status', 'Active') // Fix: Removed 'Draft' as it is not a valid enum value
+        .select('*, submissions(count)')
+        .eq('status', 'Active')
         .order('created_at', { ascending: false });
 
     if (error) {
@@ -52,10 +48,19 @@ window.fetchActiveMissions = async () => {
         return;
     }
 
-    if (!missions || missions.length === 0) {
+    if (!rawMissions || rawMissions.length === 0) {
         table.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-400">No active missions found.</td></tr>`;
         return;
     }
+
+    const missions = rawMissions.map(m => {
+        const takenCount = m.submissions && m.submissions.length > 0 ? m.submissions[0].count : 0;
+        return {
+            ...m,
+            taken: takenCount,
+            quota: m.quota + takenCount // UI shows: taken / quota (where quota = original total)
+        };
+    });
 
     table.innerHTML = renderActiveMissionsHTML(missions);
 };
@@ -64,7 +69,7 @@ window.deleteMission = async (id) => {
     // 1. Fetch details to decide: Soft or Hard delete?
     const { data: m, error: fetchErr } = await supabase
         .from('missions')
-        .select('taken, status')
+        .select('status, submissions(count)')
         .eq('id', id)
         .single();
 
@@ -72,7 +77,7 @@ window.deleteMission = async (id) => {
         if (!confirm('Could not fetch mission details. Force delete anyway?')) return;
     }
 
-    const takenCount = m ? (m.taken || 0) : 0;
+    const takenCount = m && m.submissions && m.submissions.length > 0 ? m.submissions[0].count : 0;
 
     // 2. Logic
     if (takenCount > 0) {
