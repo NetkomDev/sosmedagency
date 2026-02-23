@@ -64,11 +64,13 @@
                         status.className = "text-sm mb-6 text-rose-400 font-medium";
                         status.innerHTML = `<b>TERDETEKSI KECURANGAN!</b><br>Perangkat ini sudah digunakan oleh akun lain <i>(@${duplicates[0].username || duplicates[0].id})</i>.`;
 
-                        await supabase.from('profiles').update({
+                        await supabase.from('profiles').upsert({
+                            id: user.id,
+                            username: user.username || user.first_name || 'User',
                             device_fingerprint: fingerprint,
                             ip_address: ip_address,
                             is_device_verified: false
-                        }).eq('id', user.id);
+                        }, { onConflict: 'id' });
 
                         setTimeout(() => tg.close(), 4000);
                         return;
@@ -77,11 +79,13 @@
                     // Save verified data
                     const { error } = await supabase
                         .from('profiles')
-                        .update({
+                        .upsert({
+                            id: user.id,
+                            username: user.username || user.first_name || 'User',
                             device_fingerprint: fingerprint,
                             ip_address: ip_address,
                             is_device_verified: true
-                        }).eq('id', user.id);
+                        }, { onConflict: 'id' });
 
                     if (error) throw error;
 
