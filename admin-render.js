@@ -70,11 +70,11 @@ export const renderOrdersHTML = (orders) => {
         const aiContextBlock = order.user_instructions ? (() => {
             const ctx = order.user_instructions;
             return `
-                <div class="mt-2 bg-indigo-500/10 border border-indigo-500/20 p-2 rounded text-[10px] text-indigo-300">
+                <div class="mt-2 bg-indigo-500/10 border border-indigo-500/20 p-2 rounded text-[10px] text-indigo-300 max-w-[200px] sm:max-w-xs md:max-w-sm lg:max-w-md whitespace-normal break-words">
                     <div class="font-bold flex items-center gap-1 mb-1 text-indigo-200">🤖 Smart Context</div>
-                    ${ctx.topic ? `<div class="truncate" title="${ctx.topic}"><span class="font-semibold text-indigo-300">Topik:</span> ${ctx.topic}</div>` : ''}
+                    ${ctx.topic ? `<div><span class="font-semibold text-indigo-300">Topik:</span> ${ctx.topic}</div>` : ''}
                     ${ctx.tone ? `<div><span class="font-semibold text-indigo-300">Tone:</span> ${ctx.tone}</div>` : ''}
-                    ${ctx.points ? `<div class="truncate" title="${ctx.points}"><span class="font-semibold text-indigo-300">Poin:</span> ${ctx.points}</div>` : ''}
+                    ${ctx.points ? `<div><span class="font-semibold text-indigo-300">Poin:</span> ${ctx.points}</div>` : ''}
                 </div>`;
         })() : '';
 
@@ -100,8 +100,13 @@ export const renderOrdersHTML = (orders) => {
             </div>
             `;
 
+        const orderDate = order.created_at ? new Date(order.created_at).toLocaleString('id-ID', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) : '-';
+
         return `
         <tr class="border-b border-indigo-500/10 hover:bg-indigo-500/5 transition">
+            <td class="p-4 text-xs text-slate-300 whitespace-nowrap">
+                ${orderDate}
+            </td>
             <td class="p-4">
                 <div class="font-bold text-white">${escapeHtml(order.client_name) || 'Guest'}</div>
                 <div class="text-xs text-slate-400">${escapeHtml(order.client_whatsapp) || '-'}</div>
