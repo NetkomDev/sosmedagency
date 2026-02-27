@@ -4,29 +4,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Verifikasi Perangkat - Sosmed Agency</title>
-    <!-- Telegram WebApp JS -->
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script>
-        // Paksa buka layar loading secepat mungkin walau script lain belum siap
-        window.Telegram.WebApp.ready();
-        window.Telegram.WebApp.expand();
-    </script>
+    <title>Verifikasi Perangkat - MisiCuan</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script type="module">
         import { supabase } from './api.js';
 
         async function init() {
-            const tg = window.Telegram.WebApp;
-            // tg.ready() and tg.expand() already called above
-
             const status = document.getElementById('status');
             const icon = document.getElementById('icon-container');
 
-            const user = tg.initDataUnsafe?.user;
-            if (!user) {
-                status.innerHTML = "❌ Akses ditolak. Harap buka melalui Bot Telegram resmi.";
+            // Support both Telegram WebApp AND WhatsApp (URL parameter)
+            let userId = null;
+            let username = 'User';
+
+            // Try Telegram WebApp first (backward compatibility)
+            try {
+                if (window.Telegram && window.Telegram.WebApp) {
+                    const tg = window.Telegram.WebApp;
+                    tg.ready();
+                    tg.expand();
+                    const tgUser = tg.initDataUnsafe?.user;
+                    if (tgUser) {
+                        userId = tgUser.id;
+                        username = tgUser.username || tgUser.first_name || 'User';
+                    }
+                }
+            } catch (e) { /* Not in Telegram, skip */ }
+
+            // Fallback: WhatsApp / URL parameter (?uid=6281234567890&name=John)
+            if (!userId) {
+                const params = new URLSearchParams(window.location.search);
+                userId = params.get('uid');
+                username = params.get('name') || 'Pasukan';
+            }
+
+            if (!userId) {
+                status.innerHTML = "❌ Akses ditolak. Harap buka melalui Bot WhatsApp MisiCuan.";
                 icon.innerHTML = '🚫';
                 return;
             }
@@ -54,7 +68,7 @@
                         .from('profiles')
                         .select('id, username')
                         .eq('device_fingerprint', fingerprint)
-                        .neq('id', user.id)
+                        .neq('id', userId)
                         .limit(1);
 
                     if (duplicates && duplicates.length > 0) {
@@ -65,14 +79,13 @@
                         status.innerHTML = `<b>TERDETEKSI KECURANGAN!</b><br>Perangkat ini sudah digunakan oleh akun lain <i>(@${duplicates[0].username || duplicates[0].id})</i>.`;
 
                         await supabase.from('profiles').upsert({
-                            id: user.id,
-                            username: user.username || user.first_name || 'User',
+                            id: userId,
+                            username: username,
                             device_fingerprint: fingerprint,
                             ip_address: ip_address,
                             is_device_verified: false
                         }, { onConflict: 'id' });
 
-                        setTimeout(() => tg.close(), 4000);
                         return;
                     }
 
@@ -80,8 +93,8 @@
                     const { error } = await supabase
                         .from('profiles')
                         .upsert({
-                            id: user.id,
-                            username: user.username || user.first_name || 'User',
+                            id: userId,
+                            username: username,
                             device_fingerprint: fingerprint,
                             ip_address: ip_address,
                             is_device_verified: true
@@ -92,10 +105,7 @@
                     // Success! Show tick mark
                     icon.innerHTML = `<svg class="w-12 h-12 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
                     icon.classList.remove('animate-pulse');
-                    status.innerHTML = "✅ <b>Verifikasi Berhasil!</b><br>Sistem aman. Membawa Anda kembali ke Sosmed Agency...";
-
-                    try { tg.sendData(JSON.stringify({ action: 'device_verified', success: true })); } catch (e) { }
-                    setTimeout(() => tg.close(), 1500);
+                    status.innerHTML = "✅ <b>Verifikasi Berhasil!</b><br>Sistem aman. Kembali ke WhatsApp dan ketik <b>1</b> untuk melihat Daftar Misi.";
 
                 } catch (err) {
                     icon.innerHTML = '❌';
@@ -110,6 +120,8 @@
 
         init();
     </script>
+    <!-- Telegram WebApp JS (optional, for backward compat) -->
+    <script src="https://telegram.org/js/telegram-web-app.js" onerror=""></script>
 </head>
 
 <body class="bg-slate-900 text-white font-sans flex items-center justify-center min-h-screen p-5">
