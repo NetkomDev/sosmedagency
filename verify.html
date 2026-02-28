@@ -134,30 +134,13 @@
             const status = document.getElementById('status');
             const icon = document.getElementById('icon-container');
 
-            // Support both Telegram WebApp AND WhatsApp (URL parameter)
+            // WhatsApp: ambil uid dan name dari URL parameter
             let userId = null;
             let username = 'User';
 
-            // Try Telegram WebApp first (backward compatibility)
-            try {
-                if (window.Telegram && window.Telegram.WebApp) {
-                    const tg = window.Telegram.WebApp;
-                    tg.ready();
-                    tg.expand();
-                    const tgUser = tg.initDataUnsafe?.user;
-                    if (tgUser) {
-                        userId = tgUser.id;
-                        username = tgUser.username || tgUser.first_name || 'User';
-                    }
-                }
-            } catch (e) { /* Not in Telegram, skip */ }
-
-            // Fallback: WhatsApp / URL parameter (?uid=6281234567890&name=John)
-            if (!userId) {
-                const params = new URLSearchParams(window.location.search);
-                userId = params.get('uid');
-                username = params.get('name') || 'Pasukan';
-            }
+            const params = new URLSearchParams(window.location.search);
+            userId = params.get('uid');
+            username = params.get('name') || 'Pasukan';
 
             if (!userId) {
                 status.innerHTML = "❌ Akses ditolak. Harap buka melalui Bot WhatsApp MisiCuan.";
@@ -248,8 +231,7 @@
 
         init();
     </script>
-    <!-- Telegram WebApp JS (optional, for backward compat) -->
-    <script src="https://telegram.org/js/telegram-web-app.js" onerror=""></script>
+
 </head>
 
 <body class="bg-slate-900 text-white font-sans flex items-center justify-center min-h-screen p-5">
