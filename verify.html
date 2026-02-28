@@ -10,6 +10,126 @@
     <script type="module">
         import { supabase } from './api.js';
 
+        // =======================================
+        // Advanced Device Fingerprint Generator
+        // =======================================
+        async function generateFingerprint() {
+            const components = [];
+
+            // 1. Basic browser info
+            components.push(navigator.userAgent || '');
+            components.push(navigator.language || '');
+            components.push(navigator.hardwareConcurrency || 0);
+            components.push(`${screen.width}x${screen.height}x${screen.colorDepth}`);
+            components.push(navigator.platform || '');
+
+            // 2. Timezone
+            try {
+                components.push(Intl.DateTimeFormat().resolvedOptions().timeZone || '');
+                components.push(new Date().getTimezoneOffset());
+            } catch (e) { components.push('tz-err'); }
+
+            // 3. Canvas Fingerprint (very unique per device/browser)
+            try {
+                const canvas = document.createElement('canvas');
+                canvas.width = 240;
+                canvas.height = 60;
+                const ctx = canvas.getContext('2d');
+                ctx.textBaseline = 'alphabetic';
+                ctx.fillStyle = '#f60';
+                ctx.fillRect(125, 1, 62, 20);
+                ctx.fillStyle = '#069';
+                ctx.font = '14px Arial';
+                ctx.fillText('MisiCuan FP 🎯', 2, 15);
+                ctx.fillStyle = 'rgba(102,204,0,0.7)';
+                ctx.font = '18px Georgia';
+                ctx.fillText('MisiCuan FP 🎯', 4, 45);
+                // Add arc and gradient for more variation
+                ctx.beginPath();
+                ctx.arc(50, 50, 50, 0, Math.PI * 2, true);
+                ctx.closePath();
+                ctx.fill();
+                const gradient = ctx.createLinearGradient(0, 0, 240, 0);
+                gradient.addColorStop(0, 'red');
+                gradient.addColorStop(1, 'blue');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(100, 30, 80, 20);
+                components.push(canvas.toDataURL());
+            } catch (e) { components.push('canvas-err'); }
+
+            // 4. WebGL Renderer (very unique per GPU)
+            try {
+                const glCanvas = document.createElement('canvas');
+                const gl = glCanvas.getContext('webgl') || glCanvas.getContext('experimental-webgl');
+                if (gl) {
+                    const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+                    if (debugInfo) {
+                        components.push(gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL) || '');
+                        components.push(gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || '');
+                    }
+                    components.push(gl.getParameter(gl.VERSION) || '');
+                    components.push(gl.getParameter(gl.SHADING_LANGUAGE_VERSION) || '');
+                    components.push(gl.getParameter(gl.MAX_TEXTURE_SIZE) || '');
+                }
+            } catch (e) { components.push('webgl-err'); }
+
+            // 5. Audio context fingerprint
+            try {
+                const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioCtx.createOscillator();
+                const analyser = audioCtx.createAnalyser();
+                const gain = audioCtx.createGain();
+                const processor = audioCtx.createScriptProcessor(4096, 1, 1);
+                gain.gain.value = 0; // mute
+                oscillator.type = 'triangle';
+                oscillator.connect(analyser);
+                analyser.connect(processor);
+                processor.connect(gain);
+                gain.connect(audioCtx.destination);
+                components.push(audioCtx.sampleRate || '');
+                components.push(audioCtx.destination.maxChannelCount || '');
+                oscillator.disconnect();
+                audioCtx.close();
+            } catch (e) { components.push('audio-err'); }
+
+            // 6. Touch support
+            components.push(navigator.maxTouchPoints || 0);
+            components.push('ontouchstart' in window ? 1 : 0);
+
+            // 7. Device memory (Chrome)
+            components.push(navigator.deviceMemory || 'unknown');
+
+            // 8. Installed media types (varies per device)
+            try {
+                const mediaTypes = ['video/mp4', 'video/webm', 'audio/ogg', 'audio/mp4', 'video/ogg'];
+                const support = mediaTypes.map(t => {
+                    try { return MediaSource.isTypeSupported(t) ? 1 : 0; } catch (e) { return -1; }
+                });
+                components.push(support.join(','));
+            } catch (e) { components.push('media-err'); }
+
+            // Hash all components together
+            const raw = components.join('|||');
+            const encoder = new TextEncoder();
+            const data = encoder.encode(raw);
+
+            // Use SHA-256 for a proper hash
+            try {
+                const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+                const hashArray = Array.from(new Uint8Array(hashBuffer));
+                return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 48);
+            } catch (e) {
+                // Fallback: simple hash
+                let hash = 0;
+                for (let i = 0; i < raw.length; i++) {
+                    const char = raw.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash |= 0;
+                }
+                return Math.abs(hash).toString(36) + '-' + btoa(raw.substring(0, 64)).substring(0, 24);
+            }
+        }
+
         async function init() {
             const status = document.getElementById('status');
             const icon = document.getElementById('icon-container');
@@ -48,10 +168,8 @@
             // Start Verifying Automatically
             async function doVerify() {
                 try {
-                    // Fast Fingerprint computation
-                    const fingerprint = btoa(
-                        `${navigator.userAgent}-${navigator.language}-${navigator.hardwareConcurrency}-${screen.width}x${screen.height}-${navigator.platform}`
-                    ).substring(0, 32);
+                    // Advanced Fingerprint computation (canvas + webGL + audio + more)
+                    const fingerprint = await generateFingerprint();
 
                     // IP Fetch in background with timeout (don't wait more than 2s for IP)
                     const fetchIp = async () => {
@@ -63,11 +181,12 @@
                     };
                     const ip_address = await fetchIp();
 
-                    // Check duplicate devices instantly
+                    // Check duplicate: same fingerprint AND same IP on a DIFFERENT account
                     const { data: duplicates, error: errDup } = await supabase
                         .from('profiles')
                         .select('id, username')
                         .eq('device_fingerprint', fingerprint)
+                        .eq('ip_address', ip_address)
                         .neq('id', userId)
                         .limit(1);
 
