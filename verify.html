@@ -224,7 +224,13 @@
                     // Success! Show tick mark
                     icon.innerHTML = `<svg class="w-12 h-12 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
                     icon.classList.remove('animate-pulse');
-                    status.innerHTML = "✅ <b>Verifikasi Berhasil!</b><br>Sistem aman. Kembali ke WhatsApp dan ketik <b>1</b> untuk melihat Daftar Misi.";
+                    status.innerHTML = `✅ <b>Verifikasi Berhasil!</b><br>Sistem aman. Kembali ke WhatsApp dan ketik <b>1</b> untuk melihat Daftar Misi.
+                        <br><br>
+                        <a href="https://wa.me/6285694488510?text=1" 
+                           style="display:inline-block; background: linear-gradient(135deg, #10b981, #059669); color:white; padding: 12px 28px; border-radius: 50px; text-decoration: none; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(16,185,129,0.4); transition: all 0.3s ease;"
+                           onmouseover="this.style.transform='scale(1.05)'; this.style.boxShadow='0 6px 20px rgba(16,185,129,0.6)'"
+                           onmouseout="this.style.transform='scale(1)'; this.style.boxShadow='0 4px 15px rgba(16,185,129,0.4)'"
+                        >💬 Kembali ke WhatsApp</a>`;
 
                 } catch (err) {
                     icon.innerHTML = '❌';
