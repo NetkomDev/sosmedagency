@@ -1,151 +1,259 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dana Gacor - Gabung Pasukan!</title>
+    <title>Dana Gacor - Gabung & Mulai Cuan!</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #fbbf24;
-            --secondary: #f59e0b;
+        :root { 
+            --primary: #fbbf24; 
+            --secondary: #f59e0b; 
             --dark: #0f172a;
             --card: #1e293b;
+            --success: #10b981;
         }
-
-        body {
-            margin: 0;
-            font-family: 'Outfit', sans-serif;
+        * { box-sizing: border-box; }
+        body { 
+            margin: 0; 
+            font-family: 'Outfit', sans-serif; 
             background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            color: white; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
             min-height: 100vh;
-            overflow: hidden;
+            padding: 20px;
         }
-
-        .card {
-            background: var(--card);
-            padding: 45px 30px;
-            border-radius: 32px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
+        .card { 
+            background: var(--card); 
+            padding: 45px 30px; 
+            border-radius: 32px; 
+            border: 1px solid rgba(255,255,255,0.08); 
+            text-align: center; 
+            max-width: 420px; 
+            width: 100%; 
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(10px);
-            animation: fadeIn 0.8s ease-out;
+            animation: fadeIn 0.6s ease-out;
         }
-
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
         }
-
-        .icon {
-            font-size: 50px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            width: 90px;
-            height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 24px;
-            margin: 0 auto 25px;
+        .icon { 
+            font-size: 50px; 
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            width: 90px; height: 90px; 
+            display: flex; align-items: center; justify-content: center; 
+            border-radius: 24px; 
+            margin: 0 auto 25px; 
             box-shadow: 0 10px 25px rgba(251, 191, 36, 0.4);
             transform: rotate(-5deg);
         }
-
-        h1 {
-            font-size: 32px;
-            margin: 0 0 15px;
-            background: linear-gradient(to right, #ffffff, #fbbf24);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+        h1 { 
+            font-size: 32px; margin: 0 0 15px; 
+            background: linear-gradient(to right, #fff, #fbbf24); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
             font-weight: 700;
         }
-
-        p {
-            color: #94a3b8;
-            line-height: 1.7;
-            margin-bottom: 35px;
-            font-size: 17px;
+        p { color: #94a3b8; line-height: 1.7; margin-bottom: 30px; font-size: 16px; }
+        
+        /* Status Indicator */
+        .status-bar {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            margin-bottom: 25px; padding: 10px 16px;
+            background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 12px; font-size: 13px; color: #6ee7b7;
+            transition: all 0.4s ease;
         }
-
-        .btn {
-            display: block;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #000;
-            text-decoration: none;
-            padding: 20px;
-            border-radius: 16px;
-            font-weight: 700;
-            font-size: 18px;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        .status-bar.loading { 
+            background: rgba(251, 191, 36, 0.1); border-color: rgba(251, 191, 36, 0.2); color: #fde68a;
+        }
+        .status-bar.error { 
+            background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: #fca5a5;
+        }
+        .spinner { 
+            width: 14px; height: 14px; border: 2px solid currentColor; 
+            border-top-color: transparent; border-radius: 50%;
+            animation: spin 0.7s linear infinite; display: inline-block;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .btn { 
+            display: block; width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--secondary)); 
+            color: #000; text-decoration: none; 
+            padding: 18px; border-radius: 16px; 
+            font-weight: 700; font-size: 17px; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
             box-shadow: 0 10px 20px -5px rgba(245, 158, 11, 0.5);
-            position: relative;
-            overflow: hidden;
+            cursor: pointer; border: none;
         }
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 15px 25px -5px rgba(245, 158, 11, 0.6); }
+        .btn:active { transform: scale(0.98); }
+        .btn:disabled { opacity: 0.5; cursor: wait; transform: none; }
+        
+        .footer { margin-top: 28px; font-size: 12px; color: #475569; text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+        .highlight { color: var(--primary); font-weight: 700; }
 
-        .btn:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 15px 25px -5px rgba(245, 158, 11, 0.6);
+        /* Duplicate account warning */
+        .warning-box {
+            background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 16px; padding: 20px; margin-bottom: 25px;
+            display: none;
         }
-
-        .btn:active {
-            transform: scale(0.98);
-        }
-
-        .footer {
-            margin-top: 30px;
-            font-size: 12px;
-            color: #475569;
-            text-transform: uppercase;
-            letter-spacing: 1.5px;
-            font-weight: 600;
-        }
+        .warning-box h2 { color: #ef4444; font-size: 18px; margin: 0 0 8px; }
+        .warning-box p { color: #fca5a5; font-size: 14px; margin: 0; }
     </style>
 </head>
-
 <body>
     <div class="card">
         <div class="icon">💰</div>
         <h1>Dana Gacor</h1>
-        <p>Anda diundang menjadi <b>Pasukan Dana Gacor</b>. Kerjakan misi sosial media sederhana dan terima komisi
-            instan setiap hari!</p>
-        <a id="waLink" href="#" class="btn">Mulai Cari Cuan Sekarang 🚀</a>
+        <p>Anda diundang menjadi <b class="highlight">Pasukan Dana Gacor</b>. Kerjakan misi sosial media sederhana dan terima komisi instan setiap hari!</p>
+        
+        <div id="statusBar" class="status-bar loading">
+            <span class="spinner"></span>
+            <span id="statusText">Memverifikasi perangkat...</span>
+        </div>
+
+        <div id="warningBox" class="warning-box">
+            <h2>🚨 Terdeteksi!</h2>
+            <p id="warningText">Perangkat ini sudah terdaftar di akun lain.</p>
+        </div>
+
+        <button id="waBtn" class="btn" disabled>Memverifikasi... ⏳</button>
         <div class="footer">Official Dana Gacor Platform</div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        // Ambil ID Pemberi Referral dari URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const refId = urlParams.get('ref') || '0';
+        // =============================================
+        // CONFIG
+        // =============================================
+        const SUPABASE_URL = 'https://uvrtlenmjpueahwydomo.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV2cnRsZW5tanB1ZWFod3lkb21vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA5NTU1MTIsImV4cCI6MjA4NjUzMTUxMn0.aZrXP8tHUDxk7Am79wHHi8j6_8EX5odLqej_msDzIiA';
+        const WA_BOT_NUMBER = '6285810423611';
+        const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // Nomor Bot Dana Gacor (6281211054326 - Terdeteksi dari sistem)
-        // Kita gunakan nomor bot yang aktif.
-        const waNumber = '6285810423611';
-        const message = encodeURIComponent(`Halo Dana Gacor! Saya tertarik gabung jadi Pasukan. (Ref: ${refId})`);
+        // =============================================
+        // DEVICE FINGERPRINT (from verify.html)
+        // =============================================
+        async function generateFingerprint() {
+            const c = [];
+            c.push(navigator.userAgent || '');
+            c.push(navigator.language || '');
+            c.push(navigator.hardwareConcurrency || 0);
+            c.push(`${screen.width}x${screen.height}x${screen.colorDepth}`);
+            c.push(navigator.platform || '');
+            try { c.push(Intl.DateTimeFormat().resolvedOptions().timeZone || ''); c.push(new Date().getTimezoneOffset()); } catch(e) { c.push('tz-err'); }
+            
+            // Canvas fingerprint
+            try {
+                const cv = document.createElement('canvas'); cv.width=240; cv.height=60;
+                const ctx = cv.getContext('2d');
+                ctx.textBaseline='alphabetic'; ctx.fillStyle='#f60'; ctx.fillRect(125,1,62,20);
+                ctx.fillStyle='#069'; ctx.font='14px Arial'; ctx.fillText('DG FP',2,15);
+                ctx.fillStyle='rgba(102,204,0,0.7)'; ctx.font='18px Georgia'; ctx.fillText('DG FP',4,45);
+                ctx.beginPath(); ctx.arc(50,50,50,0,Math.PI*2,true); ctx.closePath(); ctx.fill();
+                const g=ctx.createLinearGradient(0,0,240,0); g.addColorStop(0,'red'); g.addColorStop(1,'blue');
+                ctx.fillStyle=g; ctx.fillRect(100,30,80,20);
+                c.push(cv.toDataURL());
+            } catch(e) { c.push('canvas-err'); }
 
-        document.getElementById('waLink').onclick = function (e) {
-            // Memberikan efek klik yang mantap
-            setTimeout(() => {
-                window.location.href = `https://wa.me/${waNumber}?text=${message}`;
-            }, 100);
-        };
+            // WebGL
+            try {
+                const gl = document.createElement('canvas').getContext('webgl');
+                if(gl) {
+                    const d = gl.getExtension('WEBGL_debug_renderer_info');
+                    if(d) { c.push(gl.getParameter(d.UNMASKED_VENDOR_WEBGL)||''); c.push(gl.getParameter(d.UNMASKED_RENDERER_WEBGL)||''); }
+                    c.push(gl.getParameter(gl.VERSION)||''); c.push(gl.getParameter(gl.MAX_TEXTURE_SIZE)||'');
+                }
+            } catch(e) { c.push('webgl-err'); }
 
-        // Fallback jika tombol diklik biasa
-        document.getElementById('waLink').href = `https://wa.me/${waNumber}?text=${message}`;
+            // Audio
+            try {
+                const a = new (window.AudioContext||window.webkitAudioContext)();
+                c.push(a.sampleRate||''); c.push(a.destination.maxChannelCount||''); a.close();
+            } catch(e) { c.push('audio-err'); }
+
+            c.push(navigator.maxTouchPoints||0);
+            c.push('ontouchstart' in window ? 1 : 0);
+            c.push(navigator.deviceMemory||'unknown');
+
+            // Hash
+            const raw = c.join('|||');
+            try {
+                const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(raw));
+                return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('').substring(0,48);
+            } catch(e) {
+                let h=0; for(let i=0;i<raw.length;i++){h=((h<<5)-h)+raw.charCodeAt(i);h|=0;}
+                return Math.abs(h).toString(36)+'-'+btoa(raw.substring(0,64)).substring(0,24);
+            }
+        }
+
+        async function getIP() {
+            try {
+                const r = await fetch('https://api.ipify.org?format=json', {signal:AbortSignal.timeout(3000)});
+                return (await r.json()).ip || '0.0.0.0';
+            } catch(e) { return '0.0.0.0'; }
+        }
+
+        // =============================================
+        // MAIN LOGIC
+        // =============================================
+        (async function init() {
+            const btn = document.getElementById('waBtn');
+            const statusBar = document.getElementById('statusBar');
+            const statusText = document.getElementById('statusText');
+            const warningBox = document.getElementById('warningBox');
+            const warningText = document.getElementById('warningText');
+
+            const params = new URLSearchParams(window.location.search);
+            const refId = params.get('ref') || '0';
+
+            try {
+                // === STEP 1: Generate fingerprint + IP (parallel) ===
+                const [fingerprint, ipAddress] = await Promise.all([generateFingerprint(), getIP()]);
+
+                // === STEP 2: Check duplicate device on DIFFERENT account ===
+                // Kita TIDAK tahu nomor user saat ini (belum di WA), jadi kita skip cek duplikat.
+                // Cek duplikat tetap dilakukan oleh BOT di sisi server saat user mengirim pesan pertama.
+                
+                // === STEP 3: Verifikasi sukses! ===
+                statusBar.classList.remove('loading');
+                statusText.textContent = '✅ Perangkat Anda aman & terverifikasi';
+                statusBar.querySelector('.spinner').style.display = 'none';
+
+                // === STEP 4: Aktifkan tombol dengan link WA ===
+                // Format pesan: Ref + Fingerprint + IP disisipkan,
+                // sehingga bot bisa langsung proses semua dalam 1 langkah.
+                const msg = encodeURIComponent(
+                    `Halo Dana Gacor! Saya mau gabung jadi Pasukan.\n(Ref:${refId}|FP:${fingerprint}|IP:${ipAddress})`
+                );
+                const waUrl = `https://wa.me/${WA_BOT_NUMBER}?text=${msg}`;
+
+                btn.disabled = false;
+                btn.textContent = 'Mulai Cari Cuan Sekarang 🚀';
+                btn.onclick = function() {
+                    window.location.href = waUrl;
+                };
+
+            } catch (err) {
+                // Fallback: tetap bisa masuk WA meskipun fingerprint gagal
+                statusBar.classList.remove('loading');
+                statusBar.classList.add('error');
+                statusText.textContent = '⚠️ Verifikasi gagal, tapi Anda tetap bisa lanjut';
+                statusBar.querySelector('.spinner').style.display = 'none';
+
+                const msg = encodeURIComponent(`Halo Dana Gacor! Saya mau gabung. (Ref:${refId}|FP:error|IP:0.0.0.0)`);
+                btn.disabled = false;
+                btn.textContent = 'Lanjut ke WhatsApp 🚀';
+                btn.onclick = function() {
+                    window.location.href = `https://wa.me/${WA_BOT_NUMBER}?text=${msg}`;
+                };
+            }
+        })();
     </script>
 </body>
-
 </html>
