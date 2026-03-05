@@ -6,9 +6,195 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verifikasi Perangkat - MisiCuan</title>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #0f172a;
+            --card: rgba(17, 24, 39, 0.85);
+            --border: rgba(16, 185, 129, 0.2);
+            --text: #f1f5f9;
+            --muted: #94a3b8;
+            --accent: #10b981;
+            --accent-glow: rgba(16, 185, 129, 0.3);
+            --danger: #ef4444;
+            --warning: #eab308;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.25rem;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(ellipse 60% 50% at 50% 0%, rgba(16, 185, 129, 0.1), transparent),
+                radial-gradient(ellipse 50% 40% at 80% 80%, rgba(6, 182, 212, 0.06), transparent);
+            pointer-events: none;
+        }
+
+        .card {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 1.5rem;
+            padding: 2.5rem 2rem;
+            text-align: center;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 0 50px rgba(16, 185, 129, 0.06);
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent), #06b6d4, var(--accent));
+        }
+
+        .icon-ring {
+            width: 96px;
+            height: 96px;
+            margin: 0 auto 1.5rem;
+            border: 3px solid var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            box-shadow: 0 0 20px var(--accent-glow);
+            transition: all 0.4s ease;
+        }
+
+        .icon-ring.loading {
+            animation: pulse-ring 2s ease-in-out infinite;
+        }
+
+        .icon-ring.success {
+            border-color: var(--accent);
+            box-shadow: 0 0 30px var(--accent-glow);
+        }
+
+        .icon-ring.error {
+            border-color: var(--danger);
+            box-shadow: 0 0 30px rgba(239, 68, 68, 0.3);
+        }
+
+        .icon-ring.warning {
+            border-color: var(--warning);
+            box-shadow: 0 0 30px rgba(234, 179, 8, 0.3);
+        }
+
+        @keyframes pulse-ring {
+
+            0%,
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(1.05);
+                opacity: 0.8;
+            }
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(16, 185, 129, 0.2);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        h1 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.01em;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        #status {
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        .btn-wa {
+            display: inline-block;
+            margin-top: 1.25rem;
+            background: linear-gradient(135deg, #25D366, #128C7E);
+            color: white;
+            padding: 14px 32px;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.875rem;
+            font-family: inherit;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+            text-decoration: none;
+        }
+
+        .btn-wa:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(37, 211, 102, 0.4);
+        }
+
+        .btn-wa:active {
+            transform: translateY(0);
+        }
+
+        .error-text {
+            color: #fca5a5;
+        }
+
+        .warning-text {
+            color: #fde047;
+        }
+    </style>
+
     <script type="module">
-        import { supabase } from './api.js';
+        import { SUPABASE_URL, SUPABASE_ANON_KEY } from './supabase.js';
+
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // =======================================
         // Advanced Device Fingerprint Generator
@@ -29,7 +215,7 @@
                 components.push(new Date().getTimezoneOffset());
             } catch (e) { components.push('tz-err'); }
 
-            // 3. Canvas Fingerprint (very unique per device/browser)
+            // 3. Canvas Fingerprint
             try {
                 const canvas = document.createElement('canvas');
                 canvas.width = 240;
@@ -40,11 +226,10 @@
                 ctx.fillRect(125, 1, 62, 20);
                 ctx.fillStyle = '#069';
                 ctx.font = '14px Arial';
-                ctx.fillText('MisiCuan FP 🎯', 2, 15);
+                ctx.fillText('MisiCuan FP', 2, 15);
                 ctx.fillStyle = 'rgba(102,204,0,0.7)';
                 ctx.font = '18px Georgia';
-                ctx.fillText('MisiCuan FP 🎯', 4, 45);
-                // Add arc and gradient for more variation
+                ctx.fillText('MisiCuan FP', 4, 45);
                 ctx.beginPath();
                 ctx.arc(50, 50, 50, 0, Math.PI * 2, true);
                 ctx.closePath();
@@ -57,7 +242,7 @@
                 components.push(canvas.toDataURL());
             } catch (e) { components.push('canvas-err'); }
 
-            // 4. WebGL Renderer (very unique per GPU)
+            // 4. WebGL Renderer
             try {
                 const glCanvas = document.createElement('canvas');
                 const gl = glCanvas.getContext('webgl') || glCanvas.getContext('experimental-webgl');
@@ -68,7 +253,6 @@
                         components.push(gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || '');
                     }
                     components.push(gl.getParameter(gl.VERSION) || '');
-                    components.push(gl.getParameter(gl.SHADING_LANGUAGE_VERSION) || '');
                     components.push(gl.getParameter(gl.MAX_TEXTURE_SIZE) || '');
                 }
             } catch (e) { components.push('webgl-err'); }
@@ -76,50 +260,26 @@
             // 5. Audio context fingerprint
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const oscillator = audioCtx.createOscillator();
-                const analyser = audioCtx.createAnalyser();
-                const gain = audioCtx.createGain();
-                const processor = audioCtx.createScriptProcessor(4096, 1, 1);
-                gain.gain.value = 0; // mute
-                oscillator.type = 'triangle';
-                oscillator.connect(analyser);
-                analyser.connect(processor);
-                processor.connect(gain);
-                gain.connect(audioCtx.destination);
                 components.push(audioCtx.sampleRate || '');
                 components.push(audioCtx.destination.maxChannelCount || '');
-                oscillator.disconnect();
                 audioCtx.close();
             } catch (e) { components.push('audio-err'); }
 
-            // 6. Touch support
+            // 6. Touch + memory
             components.push(navigator.maxTouchPoints || 0);
             components.push('ontouchstart' in window ? 1 : 0);
-
-            // 7. Device memory (Chrome)
             components.push(navigator.deviceMemory || 'unknown');
 
-            // 8. Installed media types (varies per device)
-            try {
-                const mediaTypes = ['video/mp4', 'video/webm', 'audio/ogg', 'audio/mp4', 'video/ogg'];
-                const support = mediaTypes.map(t => {
-                    try { return MediaSource.isTypeSupported(t) ? 1 : 0; } catch (e) { return -1; }
-                });
-                components.push(support.join(','));
-            } catch (e) { components.push('media-err'); }
-
-            // Hash all components together
+            // Hash
             const raw = components.join('|||');
             const encoder = new TextEncoder();
             const data = encoder.encode(raw);
 
-            // Use SHA-256 for a proper hash
             try {
                 const hashBuffer = await crypto.subtle.digest('SHA-256', data);
                 const hashArray = Array.from(new Uint8Array(hashBuffer));
                 return hashArray.map(b => b.toString(16).padStart(2, '0')).join('').substring(0, 48);
             } catch (e) {
-                // Fallback: simple hash
                 let hash = 0;
                 for (let i = 0; i < raw.length; i++) {
                     const char = raw.charCodeAt(i);
@@ -133,135 +293,151 @@
         async function init() {
             const status = document.getElementById('status');
             const icon = document.getElementById('icon-container');
-
-            // WhatsApp: ambil uid dan name dari URL parameter
-            let userId = null;
-            let username = 'User';
+            const title = document.getElementById('title');
+            const subtitle = document.getElementById('subtitle');
 
             const params = new URLSearchParams(window.location.search);
-            userId = params.get('uid');
-            username = params.get('name') || 'Pasukan';
+            const verifyToken = params.get('token');
 
-            if (!userId) {
-                status.innerHTML = "❌ Akses ditolak. Harap buka melalui Bot WhatsApp MisiCuan.";
+            // ===== VALIDASI TOKEN OTP =====
+            if (!verifyToken) {
+                icon.classList.remove('loading');
+                icon.classList.add('error');
                 icon.innerHTML = '🚫';
+                title.textContent = 'Akses Ditolak';
+                subtitle.textContent = 'Halaman ini hanya bisa diakses melalui link dari Bot WhatsApp Dana Gacor.';
+                status.innerHTML = '<span class="error-text">Token verifikasi tidak ditemukan.</span>';
                 return;
             }
 
-            // Start Verifying Automatically
-            async function doVerify() {
-                try {
-                    // Advanced Fingerprint computation (canvas + webGL + audio + more)
-                    const fingerprint = await generateFingerprint();
+            // Query token dari database
+            const { data: tokenData, error: tokenErr } = await supabase
+                .from('verify_tokens')
+                .select('*')
+                .eq('token', verifyToken)
+                .eq('used', false)
+                .single();
 
-                    // IP Fetch in background with timeout (don't wait more than 2s for IP)
-                    const fetchIp = async () => {
-                        try {
-                            const res = await fetch('https://api.ipify.org?format=json', { signal: AbortSignal.timeout(2000) });
-                            const json = await res.json();
-                            return json.ip || '0.0.0.0';
-                        } catch (e) { return '0.0.0.0'; }
-                    };
-                    const ip_address = await fetchIp();
-
-                    // Check duplicate: same fingerprint AND same IP on a DIFFERENT account
-                    const { data: duplicates, error: errDup } = await supabase
-                        .from('profiles')
-                        .select('id, username')
-                        .eq('device_fingerprint', fingerprint)
-                        .eq('ip_address', ip_address)
-                        .neq('id', userId)
-                        .limit(1);
-
-                    if (duplicates && duplicates.length > 0) {
-                        icon.innerHTML = '🚨';
-                        icon.classList.remove('border-emerald-500', 'shadow-[0_0_15px_rgba(16,185,129,0.5)]', 'animate-pulse');
-                        icon.classList.add('border-rose-500', 'shadow-[0_0_15px_rgba(225,29,72,0.8)]');
-                        status.className = "text-sm mb-6 text-rose-400 font-medium";
-                        status.innerHTML = `<b>TERDETEKSI KECURANGAN!</b><br>Perangkat ini sudah digunakan oleh akun lain <i>(@${duplicates[0].username || duplicates[0].id})</i>.`;
-
-                        await supabase.from('profiles').upsert({
-                            id: userId,
-                            username: username,
-                            device_fingerprint: fingerprint,
-                            ip_address: ip_address,
-                            is_device_verified: false
-                        }, { onConflict: 'id' });
-
-                        return;
-                    }
-
-                    // Save verified data
-                    const { error } = await supabase
-                        .from('profiles')
-                        .upsert({
-                            id: userId,
-                            username: username,
-                            device_fingerprint: fingerprint,
-                            ip_address: ip_address,
-                            is_device_verified: true
-                        }, { onConflict: 'id' });
-
-                    if (error) throw error;
-
-                    // Success! Show tick mark
-                    icon.innerHTML = '<svg class="w-12 h-12 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>';
-                    icon.classList.remove('animate-pulse');
-                    status.innerHTML = '✅ <b>Verifikasi Berhasil!</b><br>Sistem aman. Kembali ke WhatsApp dan ketik <b>1</b> untuk melihat Daftar Misi.' +
-                        '<br><br>' +
-                        '<button id="btn-wa-back" style="display:inline-block; background: linear-gradient(135deg, #25D366, #128C7E); color:white; padding: 12px 28px; border-radius: 50px; border: none; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 4px 15px rgba(37,211,102,0.4);">💬 Kembali ke WhatsApp</button>';
-
-                    document.getElementById('btn-wa-back').addEventListener('click', function () {
-                        window.close();
-                        setTimeout(function () {
-                            window.location.href = 'https://wa.me/6285694488510?text=1';
-                        }, 500);
-                    });
-
-                } catch (err) {
-                    icon.innerHTML = '❌';
-                    icon.classList.remove('animate-pulse');
-                    status.innerHTML = "Gagal memvalidasi: " + err.message + "<br><button onclick='location.reload()' class='mt-4 underline text-emerald-400'>Coba Lagi</button>";
-                }
+            if (tokenErr || !tokenData) {
+                icon.classList.remove('loading');
+                icon.classList.add('error');
+                icon.innerHTML = '❌';
+                title.textContent = 'Token Tidak Valid';
+                subtitle.textContent = 'Token sudah digunakan atau kedaluwarsa. Minta token baru melalui bot.';
+                status.innerHTML = '<span class="error-text">Silakan ketik "menu" di bot untuk memulai kembali.</span>';
+                return;
             }
 
-            // Start immediately
-            doVerify();
+            // Cek expired
+            if (new Date(tokenData.expires_at) < new Date()) {
+                icon.classList.remove('loading');
+                icon.classList.add('warning');
+                icon.innerHTML = '⏰';
+                title.textContent = 'Token Kedaluwarsa';
+                subtitle.textContent = 'Token ini sudah melewati batas waktu 10 menit.';
+                status.innerHTML = '<span class="warning-text">Ketik "menu" di bot untuk mendapatkan token baru.</span>';
+                return;
+            }
+
+            const userId = tokenData.user_id;
+
+            // ===== MULAI VERIFIKASI =====
+            try {
+                const fingerprint = await generateFingerprint();
+
+                // IP Fetch
+                let ip_address = '0.0.0.0';
+                try {
+                    const res = await fetch('https://api.ipify.org?format=json', { signal: AbortSignal.timeout(3000) });
+                    const json = await res.json();
+                    ip_address = json.ip || '0.0.0.0';
+                } catch (e) { /* keep default */ }
+
+                // Cek duplikat: fingerprint + IP yang sama pada akun LAIN
+                const { data: duplicates } = await supabase
+                    .from('profiles')
+                    .select('id, username')
+                    .eq('device_fingerprint', fingerprint)
+                    .eq('ip_address', ip_address)
+                    .neq('id', userId)
+                    .limit(1);
+
+                if (duplicates && duplicates.length > 0) {
+                    // Tandai token sebagai used
+                    await supabase.from('verify_tokens').update({ used: true }).eq('token', verifyToken);
+
+                    icon.classList.remove('loading');
+                    icon.classList.add('warning');
+                    icon.innerHTML = '⚠️';
+                    title.textContent = 'Perangkat Sudah Terdaftar';
+                    subtitle.innerHTML = `Perangkat ini sebelumnya ditautkan dengan akun lain. Satu perangkat hanya untuk 1 akun WhatsApp.`;
+                    status.innerHTML = '<span class="warning-text">Silakan gunakan perangkat atau nomor sebelumnya.</span>';
+
+                    await supabase.from('profiles').upsert({
+                        id: userId,
+                        device_fingerprint: fingerprint,
+                        ip_address: ip_address,
+                        is_device_verified: false
+                    }, { onConflict: 'id' });
+                    return;
+                }
+
+                // Save verified data
+                const { error } = await supabase
+                    .from('profiles')
+                    .upsert({
+                        id: userId,
+                        device_fingerprint: fingerprint,
+                        ip_address: ip_address,
+                        is_device_verified: true
+                    }, { onConflict: 'id' });
+
+                if (error) throw error;
+
+                // Tandai token sebagai used
+                await supabase.from('verify_tokens').update({ used: true }).eq('token', verifyToken);
+
+                // ✅ Success
+                icon.classList.remove('loading');
+                icon.classList.add('success');
+                icon.innerHTML = '✅';
+                title.textContent = 'Verifikasi Berhasil!';
+                subtitle.textContent = 'Perangkat Anda telah diverifikasi. Kembali ke WhatsApp dan ketik 1 untuk melihat Daftar Misi.';
+                status.innerHTML = '<button id="btn-wa-back" class="btn-wa">💬 Kembali ke WhatsApp</button>';
+
+                document.getElementById('btn-wa-back').addEventListener('click', function () {
+                    const waNumber = '628981593287';
+                    const text = '1';
+                    window.location.replace('whatsapp://send?phone=' + waNumber + '&text=' + text);
+                    setTimeout(function () { try { window.close(); } catch (e) { } }, 300);
+                    setTimeout(function () { window.location.href = 'https://wa.me/' + waNumber + '?text=' + text; }, 800);
+                });
+
+            } catch (err) {
+                icon.classList.remove('loading');
+                icon.classList.add('error');
+                icon.innerHTML = '❌';
+                title.textContent = 'Gagal Memverifikasi';
+                subtitle.textContent = err.message;
+                status.innerHTML = '<button onclick="location.reload()" style="color: var(--accent); text-decoration: underline; background: none; border: none; cursor: pointer; font-family: inherit;">Coba Lagi</button>';
+            }
         }
 
         init();
     </script>
-
 </head>
 
-<body class="bg-slate-900 text-white font-sans flex items-center justify-center min-h-screen p-5">
-    <div
-        class="bg-gray-800 p-8 rounded-3xl shadow-xl w-full max-w-sm text-center border border-gray-700 relative overflow-hidden">
-
-        <!-- Glowing animated background -->
-        <div
-            class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 via-teal-500 to-emerald-400 opacity-50">
+<body>
+    <div class="card">
+        <div id="icon-container" class="icon-ring loading">
+            <div class="spinner"></div>
         </div>
 
-        <div class="mb-8 mt-4 flex justify-center">
-            <span id="icon-container"
-                class="flex items-center justify-center w-24 h-24 text-4xl border-4 border-emerald-500 rounded-full relative shadow-[0_0_15px_rgba(16,185,129,0.5)] animate-pulse transition-all duration-300">
-                <!-- SVG Spinner -->
-                <svg class="animate-spin h-10 w-10 text-emerald-400" xmlns="http://www.w3.org/2000/svg" fill="none"
-                    viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                    <path class="opacity-75" fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                    </path>
-                </svg>
-            </span>
-        </div>
+        <h1 id="title">Memeriksa Keamanan Perangkat</h1>
+        <p id="subtitle" class="subtitle">Sistem mendeteksi dan mengamankan sidik jari digital Anda untuk mencegah
+            multi-akun...</p>
 
-        <h1 class="text-xl font-bold mb-2 tracking-wide text-gray-100">Memeriksa Keamanan Perangkat</h1>
-        <p class="text-sm text-gray-400 mb-6 leading-relaxed">Sistem mendeteksi dan mengamankan sidik jari digital Anda
-            untuk mencegah pembuatan multi-akun...</p>
-
-        <p id="status" class="text-sm text-emerald-400 font-medium"></p>
+        <p id="status"></p>
     </div>
 </body>
 
